@@ -1,0 +1,3 @@
+sudo openocd
+cargo build --bin blink
+cargo run --bin blink
