@@ -9,5 +9,6 @@ cortex-m-rt = "0.5.2"
 stm32f103xx = "0.10.0"
 panic-semihosting = "0.3.0"
 cortex-m-semihosting = "0.3.0"
+nb = "0.1.1"
 
 stm32f103xx-hal = { git = "https://github.com/japaric/stm32f103xx-hal" }
