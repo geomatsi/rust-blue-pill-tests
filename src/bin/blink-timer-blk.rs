@@ -23,7 +23,7 @@ extern crate nb;
 entry!(main);
 
 fn main() -> ! {
-    let mut c:u8 = 0;
+    let mut c: u8 = 0;
 
     let mut stdout = hio::hstdout().unwrap();
 
@@ -33,7 +33,8 @@ fn main() -> ! {
     let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
 
     let mut flash = dp.FLASH.constrain();
-    let clocks = rcc.cfgr
+    let clocks = rcc
+        .cfgr
         .sysclk(8.mhz())
         .pclk1(8.mhz())
         .freeze(&mut flash.acr);

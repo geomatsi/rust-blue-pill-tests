@@ -1,3 +1,4 @@
+#![feature(extern_prelude)]
 #![no_main]
 #![no_std]
 
@@ -6,7 +7,6 @@ extern crate cortex_m_rt as rt;
 use rt::ExceptionFrame;
 
 extern crate cortex_m as cm;
-use cm::interrupt::Mutex;
 
 extern crate cortex_m_semihosting as sh;
 use sh::hio;
@@ -16,44 +16,63 @@ extern crate panic_semihosting;
 
 extern crate stm32f103xx_hal as hal;
 use hal::prelude::*;
-use hal::gpio::*;
-use hal::stm32f103xx::*;
-use hal::timer::Timer;
+use hal::stm32f103xx;
 use hal::timer::Event;
+use hal::timer::Timer;
 
-use core::cell::RefCell;
-use core::ops::DerefMut;
 use core::fmt::Write;
+
+type LedT = hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>>;
+type TimT = hal::timer::Timer<stm32f103xx::TIM3>;
+
+static mut G_LED: Option<LedT> = None;
+static mut G_TMR: Option<TimT> = None;
 
 entry!(main);
 
 fn main() -> ! {
-    // configure TIM3 interrupt
-    let cp = cm::peripheral::Peripherals::take().unwrap();
-    let mut nvic = cp.NVIC;
-    nvic.enable(Interrupt::TIM3);
-    unsafe {
-        nvic.set_priority(Interrupt::TIM3, 1);
-    }
-    nvic.clear_pending(Interrupt::TIM3);
-
-    // configure peripherals
-    let dp = Peripherals::take().unwrap();
+    let mut cp = cm::peripheral::Peripherals::take().unwrap();
+    let dp = stm32f103xx::Peripherals::take().unwrap();
     let mut rcc = dp.RCC.constrain();
-    let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
-    let led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
 
+    // configure NVIC interrupts
+    setup_interrupts(&mut cp);
+
+    // configure clocks
     let mut flash = dp.FLASH.constrain();
-    let clocks = rcc.cfgr
+    let clocks = rcc
+        .cfgr
         .sysclk(8.mhz())
         .pclk1(8.mhz())
         .freeze(&mut flash.acr);
 
+    // configure PC13 pin to blink LED
+    let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
+    let led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
+
+    // configure and start TIM3 periodic timer
     let mut tmr = Timer::tim3(dp.TIM3, 1.hz(), clocks, &mut rcc.apb1);
     tmr.listen(Event::Update);
 
+    unsafe {
+        G_LED = Some(led);
+        G_TMR = Some(tmr);
+    }
+
     loop {
         cm::asm::nop();
+    }
+}
+
+fn setup_interrupts(cp: &mut cm::peripheral::Peripherals) {
+    let nvic = &mut cp.NVIC;
+
+    // Enable TIM3 IRQ, set prio 1 and clear any pending IRQs
+    nvic.enable(stm32f103xx::Interrupt::TIM3);
+    nvic.clear_pending(stm32f103xx::Interrupt::TIM3);
+
+    unsafe {
+        nvic.set_priority(stm32f103xx::Interrupt::TIM3, 1);
     }
 }
 
@@ -69,7 +88,7 @@ fn default_handler(irqn: i16) {
     panic!("Unhandled exception (IRQn = {})", irqn);
 }
 
-interrupt!(TIM3, timer_tim3, state: Option<HStdout> = None);
+stm32f103xx::interrupt!(TIM3, timer_tim3, state: Option<HStdout> = None);
 
 fn timer_tim3(state: &mut Option<HStdout>) {
     if state.is_none() {
@@ -77,17 +96,12 @@ fn timer_tim3(state: &mut Option<HStdout>) {
     }
 
     if let Some(hstdout) = state.as_mut() {
-        writeln!(hstdout, "TIM3 FIRE").unwrap();
+        writeln!(hstdout, "BLINK").unwrap();
     }
 
-    unsafe {
-        (*GPIOC::ptr())
-            .odr
-            .modify(|r, w| w.odr13().bit(!r.odr13().bit()));
+    let led = unsafe { G_LED.as_mut().unwrap() };
+    let tim = unsafe { G_TMR.as_mut().unwrap() };
 
-        (*TIM3::ptr())
-            .sr
-            .modify(|_, w| w.uif().clear_bit());
-
-    }
+    led.toggle();
+    tim.start(1.hz());
 }
