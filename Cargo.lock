@@ -38,6 +38,7 @@ dependencies = [
  "cortex-m-rtfm 0.3.4 (git+https://github.com/ykomatsu/cortex-m-rtfm?branch=update)",
  "cortex-m-semihosting 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "nb 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "panic-itm 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "panic-semihosting 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "stm32f103xx 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "stm32f103xx-hal 0.1.0 (git+https://github.com/japaric/stm32f103xx-hal)",
@@ -173,6 +174,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "panic-itm"
 version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "cortex-m 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "panic-itm"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cortex-m 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -370,6 +379,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum libc 0.2.43 (registry+https://github.com/rust-lang/crates.io-index)" = "76e3a3ef172f1a0b9a9ff0dd1491ae5e6c948b94479a3021819ba7d860c8645d"
 "checksum nb 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "69f380b5fe9fab8c0d7a6a99cda23e2cc0463bedb2cbc3aada0813b98496ecdc"
 "checksum panic-itm 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6b571b82c62ba962d2434a8fdb66408e707536e5ff6d1aef2409606f1182bb08"
+"checksum panic-itm 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d2f8558d6f59b9d74b4c34588604b7d9382060218abd5ec3fc01157c97838666"
 "checksum panic-semihosting 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "52f64dcd9aebf9d40f8c40ab4400bab503c89997330b8d775c20f373bf0e13fc"
 "checksum proc-macro2 0.4.19 (registry+https://github.com/rust-lang/crates.io-index)" = "ffe022fb8c8bd254524b0b3305906c1921fa37a84a644e29079a9e62200c3901"
 "checksum quote 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)" = "dd636425967c33af890042c483632d33fa7a18f19ad1d7ea72e8998c6ef8dea5"

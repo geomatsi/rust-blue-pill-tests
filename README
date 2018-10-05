@@ -1,3 +1,14 @@
-sudo openocd
-cargo build --bin blink
-cargo run --bin blink
+For semihosting debug:
+$ sudo openocd
+$ cargo build --bin test
+$ cargo run --bin test
+
+For itm debug:
+$ mkfifo /tmp/itm.fifo
+$ ~/.cargo/bin/itmdump -f /tmp/itm.fifo -F
+$ cargo build --bin test
+$ cargo run --bin test
+
+Notes
+1. ITM + JLink Pro
+Connect SWO JLink pin with SWO Blue Pill pin (B3).
