@@ -34,12 +34,12 @@ name = "blue-pill-tests"
 version = "0.1.0"
 dependencies = [
  "cortex-m 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "cortex-m-rt 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cortex-m-rt 0.6.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m-rtfm 0.3.4 (git+https://github.com/ykomatsu/cortex-m-rtfm?branch=update)",
  "cortex-m-semihosting 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "nb 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "panic-itm 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "panic-semihosting 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "panic-semihosting 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "stm32f103xx 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "stm32f103xx-hal 0.1.0 (git+https://github.com/japaric/stm32f103xx-hal)",
 ]
@@ -190,6 +190,15 @@ dependencies = [
 [[package]]
 name = "panic-semihosting"
 version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "cortex-m 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cortex-m-semihosting 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "panic-semihosting"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cortex-m 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -381,6 +390,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum panic-itm 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6b571b82c62ba962d2434a8fdb66408e707536e5ff6d1aef2409606f1182bb08"
 "checksum panic-itm 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d2f8558d6f59b9d74b4c34588604b7d9382060218abd5ec3fc01157c97838666"
 "checksum panic-semihosting 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "52f64dcd9aebf9d40f8c40ab4400bab503c89997330b8d775c20f373bf0e13fc"
+"checksum panic-semihosting 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "1017854db1621a236488ac359b89b19a56dcb1cb45127376d04f23128cea7210"
 "checksum proc-macro2 0.4.19 (registry+https://github.com/rust-lang/crates.io-index)" = "ffe022fb8c8bd254524b0b3305906c1921fa37a84a644e29079a9e62200c3901"
 "checksum quote 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)" = "dd636425967c33af890042c483632d33fa7a18f19ad1d7ea72e8998c6ef8dea5"
 "checksum r0 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "e2a38df5b15c8d5c7e8654189744d8e396bddc18ad48041a500ce52d6948941f"
