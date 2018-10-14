@@ -15,6 +15,8 @@ stm32f103xx-hal = { git = "https://github.com/japaric/stm32f103xx-hal" }
 #cortex-m-rtfm = "0.3.4+"
 cortex-m-rtfm = { git = "https://github.com/ykomatsu/cortex-m-rtfm", branch = "update" }
 
+hc-sr04 = { git = "https://github.com/geomatsi/hc-sr04", branch = "update-wip" }
+
 [dependencies.stm32f103xx]
 version = "0.10.0"
 features = ["rt"]
