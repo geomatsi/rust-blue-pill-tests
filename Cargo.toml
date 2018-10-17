@@ -15,7 +15,11 @@ stm32f103xx-hal = { git = "https://github.com/japaric/stm32f103xx-hal" }
 #cortex-m-rtfm = "0.3.4+"
 cortex-m-rtfm = { git = "https://github.com/ykomatsu/cortex-m-rtfm", branch = "update" }
 
-hc-sr04 = { git = "https://github.com/geomatsi/hc-sr04", branch = "update-wip" }
+hc-sr04 = { path = "/home/matsi/code/rust/hc-sr04" }
+#hc-sr04 = { git = "https://github.com/geomatsi/hc-sr04", branch = "update-wip" }
+
+nrf24l01 = { path = "/home/matsi/code/rust/nrf24l01" }
+#nrf24l01 = { git = "https://github.com/geomatsi/nrf24l01", branch = "update-wip" }
 
 [dependencies.stm32f103xx]
 version = "0.10.0"
