@@ -30,6 +30,11 @@ version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "bitfield"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "blue-pill-tests"
 version = "0.1.0"
 dependencies = [
@@ -37,9 +42,10 @@ dependencies = [
  "cortex-m-rt 0.6.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m-rtfm 0.3.4 (git+https://github.com/ykomatsu/cortex-m-rtfm?branch=update)",
  "cortex-m-semihosting 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "embedded-nrf24l01 0.2.0",
  "hc-sr04 0.1.0",
  "nb 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "nrf24l01 0.0.1",
+ "nrf24l01 0.0.1 (git+https://github.com/geomatsi/nrf24l01?branch=update-deps)",
  "panic-itm 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "panic-semihosting 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "stm32f103xx 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -144,6 +150,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "embedded-nrf24l01"
+version = "0.2.0"
+dependencies = [
+ "bitfield 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "embedded-hal 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "failure"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -184,6 +198,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "nrf24l01"
 version = "0.0.1"
+source = "git+https://github.com/geomatsi/nrf24l01?branch=update-deps#5573fdef60fb07a4ed2dd067a1ac0e7d04ae0cf3"
 dependencies = [
  "embedded-hal 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -388,6 +403,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum backtrace 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)" = "89a47830402e9981c5c41223151efcced65a0510c13097c769cede7efb34782a"
 "checksum backtrace-sys 0.1.24 (registry+https://github.com/rust-lang/crates.io-index)" = "c66d56ac8dabd07f6aacdaf633f4b8262f5b3601a810a0dcddffd5c22c69daa0"
 "checksum bare-metal 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "1bdcf9294ed648c7cd29b11db06ea244005aeef50ae8f605b1a3af2940bf8f92"
+"checksum bitfield 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)" = "0cdfb9275e899a694a3de63ef97a727c38f0be15765468c23f6e29e4bb461a46"
 "checksum cast 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "926013f2860c46252efceabb19f4a6b308197505082c609025aa6706c011d427"
 "checksum cc 1.0.25 (registry+https://github.com/rust-lang/crates.io-index)" = "f159dfd43363c4d08055a07703eb7a3406b0dac4d0584d96965a3262db3c9d16"
 "checksum cfg-if 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "0c4e7bb64a8ebb0d856483e1e682ea3422f883c5f5615a90d51a2c82fe87fdd3"
@@ -404,6 +420,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum failure_derive 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)" = "946d0e98a50d9831f5d589038d2ca7f8f455b1c21028c0db0e84116a12696426"
 "checksum libc 0.2.43 (registry+https://github.com/rust-lang/crates.io-index)" = "76e3a3ef172f1a0b9a9ff0dd1491ae5e6c948b94479a3021819ba7d860c8645d"
 "checksum nb 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "69f380b5fe9fab8c0d7a6a99cda23e2cc0463bedb2cbc3aada0813b98496ecdc"
+"checksum nrf24l01 0.0.1 (git+https://github.com/geomatsi/nrf24l01?branch=update-deps)" = "<none>"
 "checksum panic-itm 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6b571b82c62ba962d2434a8fdb66408e707536e5ff6d1aef2409606f1182bb08"
 "checksum panic-itm 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d2f8558d6f59b9d74b4c34588604b7d9382060218abd5ec3fc01157c97838666"
 "checksum panic-semihosting 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "52f64dcd9aebf9d40f8c40ab4400bab503c89997330b8d775c20f373bf0e13fc"
