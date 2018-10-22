@@ -1,4 +1,3 @@
-#![feature(extern_prelude)]
 #![no_main]
 #![no_std]
 

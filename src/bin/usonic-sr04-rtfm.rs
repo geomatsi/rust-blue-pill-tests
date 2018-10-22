@@ -1,4 +1,3 @@
-#![feature(extern_prelude)]
 #![deny(unsafe_code)]
 #![deny(warnings)]
 #![no_main]
