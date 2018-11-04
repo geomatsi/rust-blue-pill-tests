@@ -100,18 +100,19 @@ fn init(p: init::Peripherals) -> init::LateResources {
         (sck, miso, mosi),
         &mut afio.mapr,
         nrf24l01::MODE,
-        1.mhz(),
+        2.mhz(),
         clocks,
         &mut rcc.apb2,
     );
 
     // nRF24L01 setup
     let mut nrf = NRF24L01::new(ce, cs, spi).unwrap();
-    nrf.set_frequency(10).unwrap();
+    nrf.set_frequency(120).unwrap();
     nrf.set_rf(DataRate::R250Kbps, 3 /* 0 dBm */).unwrap();
     nrf.set_crc(Some(CrcMode::OneByte)).unwrap();
+    nrf.set_auto_retransmit(0b0100, 0b1111).unwrap();
 
-    let addr: [u8; 5] = [0xe0, 0xe1, 0xe2, 0xe3, 0xe4];
+    let addr: [u8; 5] = [0xe5, 0xe4, 0xe3, 0xe2, 0xe1];
     nrf.set_rx_addr(0, &addr).unwrap();
     nrf.set_tx_addr(&addr).unwrap();
     nrf.set_pipes_rx_lengths(&[None; 6]).unwrap();
@@ -138,7 +139,7 @@ fn idle(_t: &mut Threshold, mut _r: idle::Resources) -> ! {
 }
 
 fn timer_handler(_t: &mut Threshold, mut r: TIM3::Resources) {
-    let data: [u8; 10] = [0x31; 10];
+    let data = "hello".as_bytes();
     let dbg = &mut r.ITM.stim[0];
 
     iprintln!(dbg, "TX now");
