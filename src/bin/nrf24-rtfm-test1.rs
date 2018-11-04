@@ -27,8 +27,6 @@ use embedded_nrf24l01::DataRate;
 use embedded_nrf24l01::NRF24L01;
 use embedded_nrf24l01::StandbyMode;
 
-use core::cell::RefCell;
-
 type Standby = StandbyMode<
     NRF24L01<
         gpio::gpiob::PB0<gpio::Output<gpio::PushPull>>,
@@ -48,7 +46,7 @@ app! {
     device: hal::stm32f103xx,
 
     resources: {
-        static NRF: RefCell<Option<Standby>>;
+        static NRF: Option<Standby>;
         static LED: gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>>;
         static ITM: hal::stm32f103xx::ITM;
         static TMR: hal::timer::Timer<stm32f103xx::TIM3>;
@@ -126,7 +124,7 @@ fn init(p: init::Peripherals) -> init::LateResources {
 
     // init late resources
     init::LateResources {
-        NRF: RefCell::new(Some(nrf)),
+        NRF: Some(nrf),
         LED: led,
         TMR: tmr,
         ITM: p.core.ITM,
@@ -143,20 +141,19 @@ fn timer_handler(_t: &mut Threshold, mut r: TIM3::Resources) {
     let data: [u8; 10] = [0x31; 10];
     let dbg = &mut r.ITM.stim[0];
 
-    iprintln!(dbg, "> TX...");
+    iprintln!(dbg, "TX now");
 
-    let s = match r.NRF.replace(None) {
-        None => panic!("booo"),
-        Some(s) => {
-            let mut t = s.tx().unwrap();
-            t.send(&data).unwrap();
-            t.standby().unwrap()
-        }
-    };
+    if let Some(t) = r.NRF.take() {
+        let mut t = t.tx().unwrap();
+        t.send(&data).unwrap();
 
-    r.NRF.replace(Some(s));
+        let mut t = t.standby().unwrap();
+        *r.NRF = Some(t);
 
-    iprintln!(dbg, "< TX...");
+        iprintln!(dbg, "TX done");
+    } else {
+        iprintln!(dbg, "NRF busy...");
+    }
 
     r.LED.toggle();
     r.TMR.start(1.hz());
