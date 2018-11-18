@@ -68,7 +68,7 @@ fn setup_interrupts(cp: &mut cm::peripheral::Peripherals) {
 
     // Enable TIM3 IRQ, set prio 1 and clear any pending IRQs
     nvic.enable(stm32f103xx::Interrupt::TIM3);
-    nvic.clear_pending(stm32f103xx::Interrupt::TIM3);
+    cm::peripheral::NVIC::unpend(stm32f103xx::Interrupt::TIM3);
 
     unsafe {
         nvic.set_priority(stm32f103xx::Interrupt::TIM3, 1);
