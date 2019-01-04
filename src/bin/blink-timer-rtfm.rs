@@ -1,9 +1,11 @@
-//#![feature(extern_crate_item_prelude)]
-//#![feature(custom_attribute)]
+#![deny(unsafe_code)]
+#![deny(warnings)]
 #![no_main]
 #![no_std]
 
 extern crate cortex_m as cm;
+use cm::iprintln;
+
 extern crate cortex_m_rt as rt;
 
 extern crate rtfm;
@@ -65,7 +67,7 @@ const APP: () = {
     #[interrupt(resources = [beat, tmr2, stim])]
     fn TIM2() {
         let dbg = &mut resources.stim.stim[0];
-        cm::iprintln!(dbg, "TIM2 beat = {}", *resources.beat);
+        iprintln!(dbg, "TIM2 beat = {}", *resources.beat);
 
         *resources.beat += 1;
         resources.tmr2.start(1.hz());

@@ -3,13 +3,11 @@
 #![no_main]
 #![no_std]
 
-#[macro_use]
-extern crate cortex_m;
-
 extern crate cortex_m as cm;
+use cm::iprintln;
 
-extern crate cortex_m_rtfm as rtfm;
-use rtfm::{app, Threshold};
+extern crate rtfm;
+use rtfm::app;
 
 extern crate panic_itm;
 
@@ -24,8 +22,8 @@ extern crate embedded_nrf24l01;
 use embedded_nrf24l01::Configuration;
 use embedded_nrf24l01::CrcMode;
 use embedded_nrf24l01::DataRate;
-use embedded_nrf24l01::NRF24L01;
 use embedded_nrf24l01::StandbyMode;
+use embedded_nrf24l01::NRF24L01;
 
 type Standby = StandbyMode<
     NRF24L01<
@@ -42,120 +40,107 @@ type Standby = StandbyMode<
     >,
 >;
 
-app! {
-    device: hal::stm32f103xx,
+#[app(device = hal::stm32f103xx)]
+const APP: () = {
+    static mut NRF: Option<Standby> = ();
+    static mut LED: gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>> = ();
+    static mut ITM: hal::stm32f103xx::ITM = ();
+    static mut TMR: hal::timer::Timer<stm32f103xx::TIM3> = ();
 
-    resources: {
-        static NRF: Option<Standby>;
-        static LED: gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>>;
-        static ITM: hal::stm32f103xx::ITM;
-        static TMR: hal::timer::Timer<stm32f103xx::TIM3>;
-    },
+    #[init]
+    fn init() {
+        // configure clocks
+        let mut flash = device.FLASH.constrain();
+        let mut rcc = device.RCC.constrain();
+        let clocks = rcc
+            .cfgr
+            .sysclk(8.mhz())
+            .pclk1(8.mhz())
+            .freeze(&mut flash.acr);
 
-    idle: {
-        resources: [ITM],
-    },
+        let mut afio = device.AFIO.constrain(&mut rcc.apb2);
 
-    tasks: {
-        TIM3: {
-            path: timer_handler,
-            resources: [TMR, LED, ITM, NRF],
+        let mut gpioa = device.GPIOA.split(&mut rcc.apb2);
+        let mut gpiob = device.GPIOB.split(&mut rcc.apb2);
+        let mut gpioc = device.GPIOC.split(&mut rcc.apb2);
+
+        // configure PC13 pin as LED
+        let led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
+
+        // configure PB0 pin as NRF24 CE
+        let ce = gpiob.pb0.into_push_pull_output(&mut gpiob.crl);
+
+        // configure PA4 pin as NRF24 NCS
+        let cs = gpioa.pa4.into_push_pull_output(&mut gpioa.crl);
+
+        // configure PA5/PA6/PA7 as SPI1 pins
+        let sck = gpioa.pa5.into_alternate_push_pull(&mut gpioa.crl);
+        let miso = gpioa.pa6;
+        let mosi = gpioa.pa7.into_alternate_push_pull(&mut gpioa.crl);
+
+        // configure SPI1 for NRF24
+        let spi = Spi::spi1(
+            device.SPI1,
+            (sck, miso, mosi),
+            &mut afio.mapr,
+            nrf24l01::MODE,
+            2.mhz(),
+            clocks,
+            &mut rcc.apb2,
+        );
+
+        // nRF24L01 setup
+        let mut nrf = NRF24L01::new(ce, cs, spi).unwrap();
+        nrf.set_frequency(120).unwrap();
+        nrf.set_rf(DataRate::R250Kbps, 3 /* 0 dBm */).unwrap();
+        nrf.set_crc(Some(CrcMode::OneByte)).unwrap();
+        nrf.set_auto_retransmit(0b0100, 0b1111).unwrap();
+
+        let addr: [u8; 5] = [0xe5, 0xe4, 0xe3, 0xe2, 0xe1];
+        nrf.set_rx_addr(0, &addr).unwrap();
+        nrf.set_tx_addr(&addr).unwrap();
+        nrf.set_pipes_rx_lengths(&[None; 6]).unwrap();
+        nrf.flush_tx().unwrap();
+        nrf.flush_rx().unwrap();
+
+        // configure and start TIM3 periodic timer
+        let mut tmr = Timer::tim3(device.TIM3, 1.hz(), clocks, &mut rcc.apb1);
+        tmr.listen(Event::Update);
+
+        // init late resources
+        NRF = Some(nrf);
+        LED = led;
+        TMR = tmr;
+        ITM = core.ITM;
+    }
+
+    #[idle]
+    fn idle() -> ! {
+        loop {
+            cm::asm::wfi();
         }
-    },
-}
-
-fn init(p: init::Peripherals) -> init::LateResources {
-    // configure clocks
-    let mut flash = p.device.FLASH.constrain();
-    let mut rcc = p.device.RCC.constrain();
-    let clocks = rcc
-        .cfgr
-        .sysclk(8.mhz())
-        .pclk1(8.mhz())
-        .freeze(&mut flash.acr);
-
-    let mut afio = p.device.AFIO.constrain(&mut rcc.apb2);
-
-    let mut gpioa = p.device.GPIOA.split(&mut rcc.apb2);
-    let mut gpiob = p.device.GPIOB.split(&mut rcc.apb2);
-    let mut gpioc = p.device.GPIOC.split(&mut rcc.apb2);
-
-    // configure PC13 pin as LED
-    let led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
-
-    // configure PB0 pin as NRF24 CE
-    let ce = gpiob.pb0.into_push_pull_output(&mut gpiob.crl);
-
-    // configure PA4 pin as NRF24 NCS
-    let cs = gpioa.pa4.into_push_pull_output(&mut gpioa.crl);
-
-    // configure PA5/PA6/PA7 as SPI1 pins
-    let sck = gpioa.pa5.into_alternate_push_pull(&mut gpioa.crl);
-    let miso = gpioa.pa6;
-    let mosi = gpioa.pa7.into_alternate_push_pull(&mut gpioa.crl);
-
-    // configure SPI1 for NRF24
-    let spi = Spi::spi1(
-        p.device.SPI1,
-        (sck, miso, mosi),
-        &mut afio.mapr,
-        nrf24l01::MODE,
-        2.mhz(),
-        clocks,
-        &mut rcc.apb2,
-    );
-
-    // nRF24L01 setup
-    let mut nrf = NRF24L01::new(ce, cs, spi).unwrap();
-    nrf.set_frequency(120).unwrap();
-    nrf.set_rf(DataRate::R250Kbps, 3 /* 0 dBm */).unwrap();
-    nrf.set_crc(Some(CrcMode::OneByte)).unwrap();
-    nrf.set_auto_retransmit(0b0100, 0b1111).unwrap();
-
-    let addr: [u8; 5] = [0xe5, 0xe4, 0xe3, 0xe2, 0xe1];
-    nrf.set_rx_addr(0, &addr).unwrap();
-    nrf.set_tx_addr(&addr).unwrap();
-    nrf.set_pipes_rx_lengths(&[None; 6]).unwrap();
-    nrf.flush_tx().unwrap();
-    nrf.flush_rx().unwrap();
-
-    // configure and start TIM3 periodic timer
-    let mut tmr = Timer::tim3(p.device.TIM3, 1.hz(), clocks, &mut rcc.apb1);
-    tmr.listen(Event::Update);
-
-    // init late resources
-    init::LateResources {
-        NRF: Some(nrf),
-        LED: led,
-        TMR: tmr,
-        ITM: p.core.ITM,
-    }
-}
-
-fn idle(_t: &mut Threshold, mut _r: idle::Resources) -> ! {
-    loop {
-        rtfm::wfi();
-    }
-}
-
-fn timer_handler(_t: &mut Threshold, mut r: TIM3::Resources) {
-    let data = "hello".as_bytes();
-    let dbg = &mut r.ITM.stim[0];
-
-    iprintln!(dbg, "TX now");
-
-    if let Some(t) = r.NRF.take() {
-        let mut t = t.tx().unwrap();
-        t.send(&data).unwrap();
-
-        let mut t = t.standby().unwrap();
-        *r.NRF = Some(t);
-
-        iprintln!(dbg, "TX done");
-    } else {
-        iprintln!(dbg, "NRF busy...");
     }
 
-    r.LED.toggle();
-    r.TMR.start(1.hz());
-}
+    #[interrupt(resources = [TMR, LED, ITM, NRF])]
+    fn TIM3() {
+        let data = b"hello";
+        let dbg = &mut resources.ITM.stim[0];
+
+        iprintln!(dbg, "TX now");
+
+        if let Some(t) = resources.NRF.take() {
+            let mut t = t.tx().unwrap();
+            t.send(data).unwrap();
+
+            let t = t.standby().unwrap();
+            *resources.NRF = Some(t);
+
+            iprintln!(dbg, "TX done");
+        } else {
+            iprintln!(dbg, "NRF busy...");
+        }
+
+        resources.LED.toggle();
+        resources.TMR.start(1.hz());
+    }
+};

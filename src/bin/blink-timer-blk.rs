@@ -9,7 +9,7 @@ use rt::ExceptionFrame;
 extern crate cortex_m as cm;
 
 extern crate cortex_m_semihosting as sh;
-use sh::hio;
+use sh::hprintln;
 
 extern crate panic_semihosting;
 
@@ -18,16 +18,12 @@ use hal::prelude::*;
 use hal::stm32f103xx;
 use hal::timer::Timer;
 
-use core::fmt::Write;
-
-#[macro_use(block)]
 extern crate nb;
+use nb::block;
 
 #[entry]
 fn main() -> ! {
     let mut c: u8 = 0;
-
-    let mut stdout = hio::hstdout().unwrap();
 
     let dp = stm32f103xx::Peripherals::take().unwrap();
     let mut rcc = dp.RCC.constrain();
@@ -44,8 +40,8 @@ fn main() -> ! {
     let mut tmr = Timer::tim3(dp.TIM3, 1.hz(), clocks, &mut rcc.apb1);
 
     loop {
-        c = c + 1;
-        writeln!(stdout, "cycle {}", c).unwrap();
+        c += 1;
+        hprintln!("cycle {}", c).unwrap();
 
         led.set_high();
         tmr.start(10.hz());

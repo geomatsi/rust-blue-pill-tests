@@ -9,18 +9,16 @@ use rt::ExceptionFrame;
 extern crate cortex_m as cm;
 
 extern crate cortex_m_semihosting as sh;
-use sh::hio;
-use sh::hio::HStdout;
+use sh::hprintln;
 
 extern crate panic_semihosting;
 
 extern crate stm32f103xx_hal as hal;
 use hal::prelude::*;
 use hal::stm32f103xx;
+use hal::stm32f103xx::interrupt;
 use hal::timer::Event;
 use hal::timer::Timer;
-
-use core::fmt::Write;
 
 type LedT = hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>>;
 type TimT = hal::timer::Timer<stm32f103xx::TIM3>;
@@ -85,15 +83,9 @@ fn DefaultHandler(irqn: i16) {
     panic!("Unhandled exception (IRQn = {})", irqn);
 }
 
-stm32f103xx::interrupt!(TIM3, timer_tim3, state: Option<HStdout> = None);
-fn timer_tim3(state: &mut Option<HStdout>) {
-    if state.is_none() {
-        *state = Some(hio::hstdout().unwrap());
-    }
-
-    if let Some(hstdout) = state.as_mut() {
-        writeln!(hstdout, "BLINK").unwrap();
-    }
+#[interrupt]
+fn TIM3() {
+    hprintln!("BLINK").unwrap();
 
     let led = unsafe { G_LED.as_mut().unwrap() };
     let tim = unsafe { G_TMR.as_mut().unwrap() };
