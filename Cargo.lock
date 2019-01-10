@@ -24,14 +24,14 @@ dependencies = [
  "cortex-m-rt 0.6.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m-rtfm 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m-semihosting 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "embedded-nrf24l01 0.2.0 (git+https://github.com/geomatsi/embedded-nrf24l01?branch=update-deps)",
+ "embedded-nrf24l01 0.2.0 (git+https://github.com/astro/embedded-nrf24l01?rev=ab3ac91fb93746be9b79733960404c6f82528137)",
  "hc-sr04 0.1.0 (git+https://github.com/geomatsi/hc-sr04?branch=update-wip)",
  "nb 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "nrf24l01 0.0.1 (git+https://github.com/geomatsi/nrf24l01?branch=update-deps)",
  "panic-itm 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "panic-semihosting 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "stm32f103xx 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "stm32f103xx-hal 0.1.0 (git+https://github.com/japaric/stm32f103xx-hal)",
+ "stm32f103xx-hal 0.1.0 (git+https://github.com/japaric/stm32f103xx-hal?rev=c9d9a86bcb4c493c72b6c5a805e2dd838e2e907f)",
 ]
 
 [[package]]
@@ -71,7 +71,7 @@ dependencies = [
  "proc-macro2 0.4.24 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 0.15.23 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.15.24 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -94,7 +94,7 @@ dependencies = [
  "proc-macro2 0.4.24 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 0.15.23 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.15.24 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -117,7 +117,7 @@ dependencies = [
 [[package]]
 name = "embedded-nrf24l01"
 version = "0.2.0"
-source = "git+https://github.com/geomatsi/embedded-nrf24l01?branch=update-deps#37dfb8eba333a23fcafd4546775a4f1957c54874"
+source = "git+https://github.com/astro/embedded-nrf24l01?rev=ab3ac91fb93746be9b79733960404c6f82528137#ab3ac91fb93746be9b79733960404c6f82528137"
 dependencies = [
  "bitfield 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "embedded-hal 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -188,7 +188,7 @@ dependencies = [
  "proc-macro2 0.4.24 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 0.15.23 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.15.24 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -290,7 +290,7 @@ dependencies = [
 [[package]]
 name = "stm32f103xx-hal"
 version = "0.1.0"
-source = "git+https://github.com/japaric/stm32f103xx-hal#c9d9a86bcb4c493c72b6c5a805e2dd838e2e907f"
+source = "git+https://github.com/japaric/stm32f103xx-hal?rev=c9d9a86bcb4c493c72b6c5a805e2dd838e2e907f#c9d9a86bcb4c493c72b6c5a805e2dd838e2e907f"
 dependencies = [
  "cast 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m 0.5.8 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -303,7 +303,7 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "0.15.23"
+version = "0.15.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "proc-macro2 0.4.24 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -352,7 +352,7 @@ dependencies = [
 "checksum cortex-m-rtfm-macros 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6ea8bdc3acb36b54ec0a969d8cfd21df8fff11d7d8cb5c9072f9cca59266fa78"
 "checksum cortex-m-semihosting 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "d1dc2abec1a772e8bb697cad17d5710f180043caf8939820f0f6ba4b7ae2a4b5"
 "checksum embedded-hal 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "9880e55238830314d41d88f1ac7a819d495799c3cc3bc392cc172bab26428c33"
-"checksum embedded-nrf24l01 0.2.0 (git+https://github.com/geomatsi/embedded-nrf24l01?branch=update-deps)" = "<none>"
+"checksum embedded-nrf24l01 0.2.0 (git+https://github.com/astro/embedded-nrf24l01?rev=ab3ac91fb93746be9b79733960404c6f82528137)" = "<none>"
 "checksum generic-array 0.11.1 (registry+https://github.com/rust-lang/crates.io-index)" = "8107dafa78c80c848b71b60133954b4a58609a3a1a5f9af037ecc7f67280f369"
 "checksum hash32 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "12d790435639c06a7b798af9e1e331ae245b7ef915b92f70a39b4cf8c00686af"
 "checksum hc-sr04 0.1.0 (git+https://github.com/geomatsi/hc-sr04?branch=update-wip)" = "<none>"
@@ -374,8 +374,8 @@ dependencies = [
 "checksum semver-parser 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 "checksum stable_deref_trait 1.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "dba1a27d3efae4351c8051072d619e3ade2820635c3958d826bfea39d59b54c8"
 "checksum stm32f103xx 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)" = "055b1e4114054dcdb925ff672b5a67c118b2eff5ac84515f3e2181357e5ca615"
-"checksum stm32f103xx-hal 0.1.0 (git+https://github.com/japaric/stm32f103xx-hal)" = "<none>"
-"checksum syn 0.15.23 (registry+https://github.com/rust-lang/crates.io-index)" = "9545a6a093a3f0bd59adb472700acc08cad3776f860f16a897dfce8c88721cbc"
+"checksum stm32f103xx-hal 0.1.0 (git+https://github.com/japaric/stm32f103xx-hal?rev=c9d9a86bcb4c493c72b6c5a805e2dd838e2e907f)" = "<none>"
+"checksum syn 0.15.24 (registry+https://github.com/rust-lang/crates.io-index)" = "734ecc29cd36e8123850d9bf21dfd62ef8300aaa8f879aabaa899721808be37c"
 "checksum typenum 1.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "612d636f949607bdf9b123b4a6f6d966dedf3ff669f7f045890d3a4a73948169"
 "checksum unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "fc72304796d0818e357ead4e000d19c9c174ab23dc11093ac919054d20a6a7fc"
 "checksum vcell 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "45c297f0afb6928cd08ab1ff9d95e99392595ea25ae1b5ecf822ff8764e57a0d"
