@@ -5,15 +5,13 @@ authors = ["Sergey Matyukevich <geomatsi@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-cortex-m = "0.5.8"
-cortex-m-rt = "0.6.7"
-panic-semihosting = "0.5.1"
-cortex-m-semihosting = "0.3.2"
+cortex-m = "0.6.0"
+cortex-m-rt = "0.6.8"
+panic-semihosting = "0.5.2"
+cortex-m-semihosting = "0.3.3"
 panic-itm = "0.4.0"
-nb = "0.1.1"
-cortex-m-rtfm = "0.4.0"
-
-stm32f103xx-hal = { git = "https://github.com/japaric/stm32f103xx-hal", rev = "c9d9a86bcb4c493c72b6c5a805e2dd838e2e907f" }
+nb = "0.1.2"
+cortex-m-rtfm = "0.4.3"
 
 #hc-sr04 = { path = "/home/matsi/devel/code/rust/hc-sr04" }
 hc-sr04 = { git = "https://github.com/geomatsi/hc-sr04", branch = "update-wip" }
@@ -24,6 +22,6 @@ nrf24l01 = { git = "https://github.com/geomatsi/nrf24l01", branch = "update-deps
 #embedded-nrf24l01 = { path = "/home/matsi/devel/code/rust/embedded-nrf24l01" }
 embedded-nrf24l01 = { git = "https://github.com/astro/embedded-nrf24l01", rev = "ab3ac91fb93746be9b79733960404c6f82528137" }
 
-[dependencies.stm32f103xx]
-version = "0.11.0"
-features = ["rt"]
+[dependencies.stm32f1xx-hal]
+git = "https://github.com/stm32-rs/stm32f1xx-hal.git"
+features = ["stm32f103", "rt"]

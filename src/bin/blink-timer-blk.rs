@@ -13,9 +13,8 @@ use sh::hprintln;
 
 extern crate panic_semihosting;
 
-extern crate stm32f103xx_hal as hal;
+extern crate stm32f1xx_hal as hal;
 use hal::prelude::*;
-use hal::stm32f103xx;
 use hal::timer::Timer;
 
 extern crate nb;
@@ -25,7 +24,7 @@ use nb::block;
 fn main() -> ! {
     let mut c: u8 = 0;
 
-    let dp = stm32f103xx::Peripherals::take().unwrap();
+    let dp = hal::stm32::Peripherals::take().unwrap();
     let mut rcc = dp.RCC.constrain();
     let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
     let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);

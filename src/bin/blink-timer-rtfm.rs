@@ -1,5 +1,4 @@
 #![deny(unsafe_code)]
-#![deny(warnings)]
 #![no_main]
 #![no_std]
 
@@ -13,19 +12,20 @@ use rtfm::app;
 
 extern crate panic_itm;
 
-extern crate stm32f103xx_hal as hal;
+extern crate stm32f1xx_hal as hal;
 use hal::prelude::*;
+use hal::stm32;
 use hal::timer::Event;
 use hal::timer::Timer;
 
-#[app(device = hal::stm32f103xx)]
+#[app(device = hal::stm32)]
 const APP: () = {
     // resources
     static mut beat: u8 = 0;
-    static mut stim: hal::stm32f103xx::ITM = ();
+    static mut stim: hal::stm32::ITM = ();
     static mut led1: hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>> = ();
-    static mut tmr2: hal::timer::Timer<stm32f103xx::TIM2> = ();
-    static mut tmr3: hal::timer::Timer<stm32f103xx::TIM3> = ();
+    static mut tmr2: hal::timer::Timer<stm32::TIM2> = ();
+    static mut tmr3: hal::timer::Timer<stm32::TIM3> = ();
 
     #[init]
     fn init() {

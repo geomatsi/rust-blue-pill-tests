@@ -11,9 +11,10 @@ use rtfm::app;
 
 extern crate panic_itm;
 
-extern crate stm32f103xx_hal as hal;
+extern crate stm32f1xx_hal as hal;
 use hal::delay::Delay;
 use hal::prelude::*;
+use hal::stm32;
 use hal::time::Instant;
 use hal::time::MonoTimer;
 use hal::timer::Event;
@@ -22,17 +23,17 @@ use hal::timer::Timer;
 extern crate hc_sr04;
 use hc_sr04::{Error, HcSr04};
 
-#[app(device = hal::stm32f103xx)]
+#[app(device = hal::stm32)]
 const APP: () = {
     static mut SENSOR: HcSr04<
         hal::gpio::gpioa::PA1<hal::gpio::Output<hal::gpio::PushPull>>,
         Delay,
     > = ();
     static mut TIMER: MonoTimer = ();
-    static mut EXTI: hal::stm32f103xx::EXTI = ();
+    static mut EXTI: hal::stm32::EXTI = ();
     static mut LED: hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>> = ();
-    static mut ITM: hal::stm32f103xx::ITM = ();
-    static mut TMR: hal::timer::Timer<stm32f103xx::TIM3> = ();
+    static mut ITM: hal::stm32::ITM = ();
+    static mut TMR: hal::timer::Timer<stm32::TIM3> = ();
     static mut TS: Option<Instant> = None;
 
     #[init]

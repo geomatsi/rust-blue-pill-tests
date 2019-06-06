@@ -13,15 +13,15 @@ use sh::hprintln;
 
 extern crate panic_semihosting;
 
-extern crate stm32f103xx_hal as hal;
+extern crate stm32f1xx_hal as hal;
 use hal::prelude::*;
-use hal::stm32f103xx;
-use hal::stm32f103xx::interrupt;
+use hal::stm32;
+use hal::stm32::interrupt;
 use hal::timer::Event;
 use hal::timer::Timer;
 
 type LedT = hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>>;
-type TimT = hal::timer::Timer<stm32f103xx::TIM3>;
+type TimT = hal::timer::Timer<stm32::TIM3>;
 
 static mut G_LED: Option<LedT> = None;
 static mut G_TMR: Option<TimT> = None;
@@ -29,7 +29,7 @@ static mut G_TMR: Option<TimT> = None;
 #[entry]
 fn main() -> ! {
     let mut cp = cm::peripheral::Peripherals::take().unwrap();
-    let dp = stm32f103xx::Peripherals::take().unwrap();
+    let dp = hal::stm32::Peripherals::take().unwrap();
     let mut rcc = dp.RCC.constrain();
 
     // configure NVIC interrupts
@@ -65,11 +65,11 @@ fn setup_interrupts(cp: &mut cm::peripheral::Peripherals) {
     let nvic = &mut cp.NVIC;
 
     // Enable TIM3 IRQ, set prio 1 and clear any pending IRQs
-    nvic.enable(stm32f103xx::Interrupt::TIM3);
-    cm::peripheral::NVIC::unpend(stm32f103xx::Interrupt::TIM3);
+    nvic.enable(stm32::Interrupt::TIM3);
+    cm::peripheral::NVIC::unpend(stm32::Interrupt::TIM3);
 
     unsafe {
-        nvic.set_priority(stm32f103xx::Interrupt::TIM3, 1);
+        nvic.set_priority(stm32::Interrupt::TIM3, 1);
     }
 }
 

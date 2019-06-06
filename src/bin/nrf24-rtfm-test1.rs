@@ -1,5 +1,4 @@
 #![deny(unsafe_code)]
-#![deny(warnings)]
 #![no_main]
 #![no_std]
 
@@ -11,10 +10,11 @@ use rtfm::app;
 
 extern crate panic_itm;
 
-extern crate stm32f103xx_hal as hal;
+extern crate stm32f1xx_hal as hal;
 use hal::gpio;
 use hal::prelude::*;
 use hal::spi::Spi;
+use hal::stm32;
 use hal::timer::Event;
 use hal::timer::Timer;
 
@@ -30,7 +30,7 @@ type Standby = StandbyMode<
         gpio::gpiob::PB0<gpio::Output<gpio::PushPull>>,
         gpio::gpioa::PA4<gpio::Output<gpio::PushPull>>,
         Spi<
-            hal::stm32f103xx::SPI1,
+            hal::stm32::SPI1,
             (
                 gpio::gpioa::PA5<gpio::Alternate<gpio::PushPull>>,
                 gpio::gpioa::PA6<gpio::Input<gpio::Floating>>,
@@ -42,12 +42,12 @@ type Standby = StandbyMode<
 
 // Simple Tx test for embedded-nrf24l01 crate
 
-#[app(device = hal::stm32f103xx)]
+#[app(device = hal::stm32)]
 const APP: () = {
     static mut NRF: Option<Standby> = ();
     static mut LED: gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>> = ();
-    static mut ITM: hal::stm32f103xx::ITM = ();
-    static mut TMR: hal::timer::Timer<stm32f103xx::TIM3> = ();
+    static mut ITM: hal::stm32::ITM = ();
+    static mut TMR: hal::timer::Timer<stm32::TIM3> = ();
 
     #[init]
     fn init() {
