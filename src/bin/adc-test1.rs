@@ -33,7 +33,6 @@ fn main() -> ! {
     //let clocks = rcc.cfgr.use_hse(8.mhz()).sysclk(32.mhz()).pclk1(16.mhz()).adcclk(8.mhz()).freeze(&mut flash.acr);
     //let clocks = rcc.cfgr.use_hse(8.mhz()).sysclk(40.mhz()).pclk1(20.mhz()).adcclk(10.mhz()).freeze(&mut flash.acr);
     //let clocks = rcc.cfgr.use_hse(8.mhz()).sysclk(48.mhz()).pclk1(24.mhz()).adcclk(12.mhz()).freeze(&mut flash.acr);
-
     let clocks = rcc
         .cfgr
         .use_hse(8.mhz())
@@ -46,7 +45,7 @@ fn main() -> ! {
     hprintln!("ADCCLK: {} Hz ...", clocks.adcclk().0).unwrap();
 
     // ADC setup
-    let mut adc = Adc::adc1(p.ADC1, &mut rcc.apb2, clocks.adcclk());
+    let mut adc = Adc::adc1(p.ADC1, &mut rcc.apb2, clocks);
 
     loop {
         // Ambient temperature

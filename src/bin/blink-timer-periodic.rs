@@ -15,37 +15,37 @@ extern crate panic_semihosting;
 
 extern crate stm32f1xx_hal as hal;
 use hal::prelude::*;
+use hal::timer::Timer;
+
+extern crate nb;
+use nb::block;
 
 #[entry]
 fn main() -> ! {
+    let mut c: u8 = 0;
+
     let dp = hal::stm32::Peripherals::take().unwrap();
     let mut rcc = dp.RCC.constrain();
-    let mut flash = dp.FLASH.constrain();
-
-    let clocks = rcc
-        .cfgr
-        .use_hse(8.mhz())
-        .sysclk(16.mhz())
-        .pclk1(4.mhz())
-        .adcclk(2.mhz())
-        .freeze(&mut flash.acr);
-
     let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
     let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
 
+    let mut flash = dp.FLASH.constrain();
+    let clocks = rcc
+        .cfgr
+        .sysclk(8.mhz())
+        .pclk1(8.mhz())
+        .freeze(&mut flash.acr);
+
+    let mut tmr = Timer::tim3(dp.TIM3, 1.hz(), clocks, &mut rcc.apb1);
+
     loop {
-        hprintln!("Hello World!").unwrap();
+        c += 1;
+        hprintln!("cycle {}", c).unwrap();
 
         led.set_high();
-        delay(5000);
+        block!(tmr.wait()).ok();
         led.set_low();
-        delay(500);
-    }
-}
-
-fn delay(count: u32) {
-    for _ in 0..count {
-        cm::asm::nop();
+        block!(tmr.wait()).ok();
     }
 }
 
