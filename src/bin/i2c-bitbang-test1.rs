@@ -1,3 +1,7 @@
+//
+// I2C bitbang for LM75A temperature sensor
+//
+
 #![no_std]
 #![no_main]
 
@@ -37,7 +41,7 @@ fn main() -> ! {
         .freeze(&mut flash.acr);
     //let clocks = rcc.cfgr.sysclk(8.mhz()).pclk1(8.mhz()).freeze(&mut flash.acr);
 
-    let mut tmr = Timer::tim3(dp.TIM3, 300.khz(), clocks, &mut rcc.apb1);
+    let tmr = Timer::tim3(dp.TIM3, 200.khz(), clocks, &mut rcc.apb1);
     let scl = gpioa.pa1.into_open_drain_output(&mut gpioa.crl);
     let sda = gpioa.pa2.into_open_drain_output(&mut gpioa.crl);
 
