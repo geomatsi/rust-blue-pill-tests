@@ -5,7 +5,6 @@ authors = ["Sergey Matyukevich <geomatsi@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-cortex-m = "0.6.0"
 cortex-m-rt = "0.6.8"
 panic-semihosting = "0.5.2"
 cortex-m-semihosting = "0.3.3"
@@ -14,6 +13,10 @@ nb = "0.1.2"
 cortex-m-rtfm = "0.4.3"
 eeprom24x = "0.3.0"
 lm75 = "0.1.1"
+
+[dependencies.cortex-m]
+version="0.6.0"
+features=["const-fn"]
 
 #hc-sr04 = { path = "/home/matsi/devel/code/rust/hc-sr04" }
 hc-sr04 = { git = "https://github.com/geomatsi/hc-sr04", branch = "update-wip" }
@@ -29,5 +32,4 @@ git = "https://github.com/stm32-rs/stm32f1xx-hal.git"
 features = ["stm32f103", "rt"]
 
 [dependencies.bitbang-hal]
-git = "https://github.com/geomatsi/bitbang-hal"
-branch = "i2c-wip"
+git = "https://github.com/sajattack/bitbang-hal"
