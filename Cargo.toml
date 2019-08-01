@@ -18,6 +18,12 @@ lm75 = "0.1.1"
 version="0.6.0"
 features=["const-fn"]
 
+[dependencies.embedded-hal]
+version="0.2.3"
+#git = "https://github.com/geomatsi/embedded-hal.git"
+#branch = "test"
+features=["unproven"]
+
 #hc-sr04 = { path = "/home/matsi/devel/code/rust/hc-sr04" }
 hc-sr04 = { git = "https://github.com/geomatsi/hc-sr04", branch = "update-wip" }
 
@@ -33,3 +39,9 @@ features = ["stm32f103", "rt"]
 
 [dependencies.bitbang-hal]
 git = "https://github.com/sajattack/bitbang-hal"
+
+[dependencies.shared-bus]
+#git = "https://github.com/Rahix/shared-bus.git"
+git = "https://github.com/geomatsi/shared-bus.git"
+branch = "shared-adc"
+features=["cortexm"]
