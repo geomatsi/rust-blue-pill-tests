@@ -2,30 +2,25 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m as cm;
 use cm::iprintln;
-
-extern crate cortex_m_rt as rt;
-
-extern crate rtfm;
-use rtfm::app;
-
-extern crate panic_itm;
-
-extern crate stm32f1xx_hal as hal;
+use cortex_m as cm;
 use hal::prelude::*;
 use hal::stm32;
 use hal::timer::Event;
 use hal::timer::Timer;
+use panic_itm as _;
+use rtfm;
+use rtfm::app;
+use stm32f1xx_hal as hal;
 
-#[app(device = hal::stm32)]
+#[app(device = stm32f1xx_hal::stm32)]
 const APP: () = {
     // resources
     static mut beat: u8 = 0;
     static mut stim: hal::stm32::ITM = ();
     static mut led1: hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>> = ();
-    static mut tmr2: hal::timer::Timer<stm32::TIM2> = ();
-    static mut tmr3: hal::timer::Timer<stm32::TIM3> = ();
+    static mut tmr2: hal::timer::CountDownTimer<stm32::TIM2> = ();
+    static mut tmr3: hal::timer::CountDownTimer<stm32::TIM3> = ();
 
     #[init]
     fn init() {
@@ -44,11 +39,11 @@ const APP: () = {
         let l1 = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
 
         // configure and start TIM2 periodic timer
-        let mut t2 = Timer::tim2(device.TIM2, 1.hz(), clocks, &mut rcc.apb1);
+        let mut t2 = Timer::tim2(device.TIM2, &clocks, &mut rcc.apb1).start_count_down(1.hz());
         t2.listen(Event::Update);
 
         // configure and start TIM3 periodic timer
-        let mut t3 = Timer::tim3(device.TIM3, 5.hz(), clocks, &mut rcc.apb1);
+        let mut t3 = Timer::tim3(device.TIM3, &clocks, &mut rcc.apb1).start_count_down(5.hz());
         t3.listen(Event::Update);
 
         led1 = l1;
@@ -75,7 +70,7 @@ const APP: () = {
 
     #[interrupt(resources = [led1, tmr3])]
     fn TIM3() {
-        resources.led1.toggle();
+        resources.led1.toggle().unwrap();
         resources.tmr3.start(5.hz());
     }
 };

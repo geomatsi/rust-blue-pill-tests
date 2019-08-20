@@ -5,26 +5,17 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt as rt;
-use rt::entry;
-use rt::exception;
-use rt::ExceptionFrame;
-
-extern crate cortex_m as cm;
-
-extern crate cortex_m_semihosting as sh;
-use sh::hprintln;
-
-extern crate panic_semihosting;
-
-extern crate stm32f1xx_hal as hal;
+use bitbang_hal;
+use cortex_m as cm;
+use cortex_m_rt as rt;
+use cortex_m_semihosting::hprintln;
 use hal::prelude::*;
 use hal::timer::Timer;
-
-use bitbang_hal;
-
-extern crate lm75;
+use lm75;
 use lm75::{Lm75, SlaveAddr};
+use panic_semihosting as _;
+use rt::entry;
+use stm32f1xx_hal as hal;
 
 #[entry]
 fn main() -> ! {
@@ -41,7 +32,7 @@ fn main() -> ! {
         .freeze(&mut flash.acr);
     //let clocks = rcc.cfgr.sysclk(8.mhz()).pclk1(8.mhz()).freeze(&mut flash.acr);
 
-    let tmr = Timer::tim3(dp.TIM3, 200.khz(), clocks, &mut rcc.apb1);
+    let tmr = Timer::tim3(dp.TIM3, &clocks, &mut rcc.apb1).start_count_down(200.khz());
     let scl = gpioa.pa1.into_open_drain_output(&mut gpioa.crl);
     let sda = gpioa.pa2.into_open_drain_output(&mut gpioa.crl);
 
@@ -59,14 +50,4 @@ fn delay(count: u32) {
     for _ in 0..count {
         cm::asm::nop();
     }
-}
-
-#[exception]
-fn HardFault(ef: &ExceptionFrame) -> ! {
-    panic!("HardFault at {:#?}", ef);
-}
-
-#[exception]
-fn DefaultHandler(irqn: i16) {
-    panic!("Unhandled exception (IRQn = {})", irqn);
 }

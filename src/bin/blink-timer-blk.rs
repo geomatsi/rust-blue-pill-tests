@@ -1,24 +1,15 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt as rt;
-use rt::entry;
-use rt::exception;
-use rt::ExceptionFrame;
-
-extern crate cortex_m as cm;
-
-extern crate cortex_m_semihosting as sh;
-use sh::hprintln;
-
-extern crate panic_semihosting;
-
-extern crate stm32f1xx_hal as hal;
+use cortex_m_rt as rt;
+use cortex_m_semihosting::hprintln;
+use embedded_hal::digital::v2::OutputPin;
 use hal::prelude::*;
 use hal::timer::Timer;
-
-extern crate nb;
 use nb::block;
+use panic_semihosting as _;
+use rt::entry;
+use stm32f1xx_hal as hal;
 
 #[entry]
 fn main() -> ! {
@@ -36,27 +27,17 @@ fn main() -> ! {
         .pclk1(8.mhz())
         .freeze(&mut flash.acr);
 
-    let mut tmr = Timer::tim3(dp.TIM3, 1.hz(), clocks, &mut rcc.apb1);
+    let mut tmr = Timer::tim3(dp.TIM3, &clocks, &mut rcc.apb1).start_count_down(1.hz());
 
     loop {
         c += 1;
         hprintln!("cycle {}", c).unwrap();
 
-        led.set_high();
+        led.set_high().unwrap();
         tmr.start(10.hz());
         block!(tmr.wait()).unwrap();
-        led.set_low();
+        led.set_low().unwrap();
         tmr.start(1.hz());
         block!(tmr.wait()).unwrap();
     }
-}
-
-#[exception]
-fn HardFault(ef: &ExceptionFrame) -> ! {
-    panic!("HardFault at {:#?}", ef);
-}
-
-#[exception]
-fn DefaultHandler(irqn: i16) {
-    panic!("Unhandled exception (IRQn = {})", irqn);
 }

@@ -28,7 +28,11 @@ impl<'a, ADC, PIN> Measurement<'a, ADC, PIN>
 where
     PIN: Channel<ADC, ID = u8>,
 {
-    pub fn init(adc: &'a mut dyn OneShot<ADC, u16, PIN, Error = ()>, pin1: &'a mut dyn Channel<ADC, ID = u8>, pin2: &'a mut dyn Channel<ADC, ID = u8>) -> Self {
+    pub fn init(
+        adc: &'a mut dyn OneShot<ADC, u16, PIN, Error = ()>,
+        pin1: &'a mut dyn Channel<ADC, ID = u8>,
+        pin2: &'a mut dyn Channel<ADC, ID = u8>,
+    ) -> Self {
         Measurement { adc, pin1, pin2 }
     }
 

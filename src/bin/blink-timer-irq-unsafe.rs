@@ -1,27 +1,20 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt as rt;
-use rt::entry;
-use rt::exception;
-use rt::ExceptionFrame;
-
-extern crate cortex_m as cm;
-
-extern crate cortex_m_semihosting as sh;
-use sh::hprintln;
-
-extern crate panic_semihosting;
-
-extern crate stm32f1xx_hal as hal;
+use cortex_m as cm;
+use cortex_m_rt as rt;
+use cortex_m_semihosting::hprintln;
 use hal::prelude::*;
 use hal::stm32;
 use hal::stm32::interrupt;
 use hal::timer::Event;
 use hal::timer::Timer;
+use panic_semihosting as _;
+use rt::entry;
+use stm32f1xx_hal as hal;
 
 type LedT = hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>>;
-type TimT = hal::timer::Timer<stm32::TIM3>;
+type TimT = hal::timer::CountDownTimer<stm32::TIM3>;
 
 static mut G_LED: Option<LedT> = None;
 static mut G_TMR: Option<TimT> = None;
@@ -48,7 +41,7 @@ fn main() -> ! {
     let led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
 
     // configure and start TIM3 periodic timer
-    let mut tmr = Timer::tim3(dp.TIM3, 1.hz(), clocks, &mut rcc.apb1);
+    let mut tmr = Timer::tim3(dp.TIM3, &clocks, &mut rcc.apb1).start_count_down(1.hz());
     tmr.listen(Event::Update);
 
     unsafe {
@@ -73,16 +66,6 @@ fn setup_interrupts(cp: &mut cm::peripheral::Peripherals) {
     }
 }
 
-#[exception]
-fn HardFault(ef: &ExceptionFrame) -> ! {
-    panic!("HardFault at {:#?}", ef);
-}
-
-#[exception]
-fn DefaultHandler(irqn: i16) {
-    panic!("Unhandled exception (IRQn = {})", irqn);
-}
-
 #[interrupt]
 fn TIM3() {
     hprintln!("BLINK").unwrap();
@@ -90,6 +73,6 @@ fn TIM3() {
     let led = unsafe { G_LED.as_mut().unwrap() };
     let tim = unsafe { G_TMR.as_mut().unwrap() };
 
-    led.toggle();
+    led.toggle().unwrap();
     tim.start(1.hz());
 }

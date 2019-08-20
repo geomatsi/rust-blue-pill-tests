@@ -2,20 +2,18 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m as cm;
 use cm::iprintln;
-
-extern crate rtfm;
-use rtfm::app;
-
-extern crate panic_itm;
-
-extern crate stm32f1xx_hal as hal;
+use cortex_m as cm;
+use embedded_hal::spi::MODE_0;
 use hal::gpio;
 use hal::prelude::*;
 use hal::spi::Spi;
+use panic_itm as _;
+use rtfm;
+use rtfm::app;
+use stm32f1xx_hal as hal;
 
-extern crate embedded_nrf24l01;
+use embedded_nrf24l01;
 use embedded_nrf24l01::Configuration;
 use embedded_nrf24l01::CrcMode;
 use embedded_nrf24l01::DataRate;
@@ -39,7 +37,7 @@ type Standby = StandbyMode<
 
 // Simple Rx test for embedded-nrf24l01 crate
 
-#[app(device = hal::stm32)]
+#[app(device = stm32f1xx_hal::stm32)]
 const APP: () = {
     static mut NRF: Option<Standby> = ();
     static mut LED: gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>> = ();
@@ -81,7 +79,7 @@ const APP: () = {
             device.SPI1,
             (sck, miso, mosi),
             &mut afio.mapr,
-            nrf24l01::MODE,
+            MODE_0,
             2.mhz(),
             clocks,
             &mut rcc.apb2,
@@ -124,7 +122,7 @@ const APP: () = {
             if pipe.is_some() {
                 let data = rx.read().unwrap();
                 iprintln!(dbg, "{:?}", data.as_ref());
-                resources.LED.toggle();
+                resources.LED.toggle().unwrap();
             }
         }
     }

@@ -2,23 +2,21 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m as cm;
 use cm::iprintln;
-
-extern crate rtfm;
-use rtfm::app;
-
-extern crate panic_itm;
-
-extern crate stm32f1xx_hal as hal;
+use cortex_m as cm;
+use embedded_hal::spi::MODE_0;
 use hal::gpio;
 use hal::prelude::*;
 use hal::spi::Spi;
 use hal::stm32;
 use hal::timer::Event;
 use hal::timer::Timer;
+use panic_itm as _;
+use rtfm;
+use rtfm::app;
+use stm32f1xx_hal as hal;
 
-extern crate embedded_nrf24l01;
+use embedded_nrf24l01;
 use embedded_nrf24l01::Configuration;
 use embedded_nrf24l01::CrcMode;
 use embedded_nrf24l01::DataRate;
@@ -42,12 +40,12 @@ type Standby = StandbyMode<
 
 // Simple Tx test for embedded-nrf24l01 crate
 
-#[app(device = hal::stm32)]
+#[app(device = stm32f1xx_hal::stm32)]
 const APP: () = {
     static mut NRF: Option<Standby> = ();
     static mut LED: gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>> = ();
     static mut ITM: hal::stm32::ITM = ();
-    static mut TMR: hal::timer::Timer<stm32::TIM3> = ();
+    static mut TMR: hal::timer::CountDownTimer<stm32::TIM3> = ();
 
     #[init]
     fn init() {
@@ -85,14 +83,14 @@ const APP: () = {
             device.SPI1,
             (sck, miso, mosi),
             &mut afio.mapr,
-            nrf24l01::MODE,
+            MODE_0,
             2.mhz(),
             clocks,
             &mut rcc.apb2,
         );
 
         // nRF24L01 general setup
-        let mut nrf = NRF24L01::new(ce, cs, spi).unwrap();
+        let mut nrf = NRF24L01::new(ce.into(), cs.into(), spi).unwrap();
         nrf.set_frequency(120).unwrap();
         nrf.set_rf(DataRate::R250Kbps, 3 /* 0 dBm */).unwrap();
         nrf.set_crc(Some(CrcMode::OneByte)).unwrap();
@@ -107,7 +105,7 @@ const APP: () = {
         nrf.flush_rx().unwrap();
 
         // configure and start TIM3 periodic timer
-        let mut tmr = Timer::tim3(device.TIM3, 1.hz(), clocks, &mut rcc.apb1);
+        let mut tmr = Timer::tim3(device.TIM3, &clocks, &mut rcc.apb1).start_count_down(1.hz());
         tmr.listen(Event::Update);
 
         // init late resources
@@ -143,7 +141,7 @@ const APP: () = {
             iprintln!(dbg, "NRF busy...");
         }
 
-        resources.LED.toggle();
+        resources.LED.toggle().unwrap();
         resources.TMR.start(1.hz());
     }
 };
