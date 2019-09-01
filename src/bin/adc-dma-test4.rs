@@ -9,6 +9,7 @@ use cortex_m_rt::entry;
 use cortex_m_semihosting::hprintln;
 use hal::adc;
 use hal::adc::Adc;
+use hal::adc::Scan;
 use hal::adc::SetChannels;
 use hal::delay::Delay;
 use hal::dma;
@@ -22,7 +23,7 @@ use hal::stm32::interrupt;
 use panic_semihosting as _;
 use stm32f1xx_hal as hal;
 
-type RdmaT = adc::AdcDma<AdcPins>;
+type RdmaT = adc::AdcDma<AdcPins, Scan>;
 type RbufT = &'static mut [u16; 4];
 
 static G_XFR: Mutex<RefCell<Option<Transfer<W, RbufT, RdmaT>>>> = Mutex::new(RefCell::new(None));
@@ -77,7 +78,7 @@ fn main() -> ! {
 
     let buf = singleton!(: [u16; 4] = [0; 4]).unwrap();
 
-    let adc_dma = adc1.with_dma(adc_pins, dma_ch1);
+    let adc_dma = adc1.with_scan_dma(adc_pins, dma_ch1);
     let xfer = adc_dma.read(buf);
 
     cm::interrupt::free(|cs| {
