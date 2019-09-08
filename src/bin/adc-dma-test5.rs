@@ -74,15 +74,14 @@ const APP: () = {
         let adc_pins = AdcPins(adc_ch0, adc_ch1, adc_ch2, adc_ch3);
         let buffer = singleton!(: [u16; 4] = [0; 4]).unwrap();
         let adc_dma = adc1.with_scan_dma(adc_pins, dma_ch1);
-        let transfer = adc_dma.read(buffer);
 
         schedule
             .start_adc_dma(Instant::now() + PERIOD.cycles())
             .unwrap();
 
-        xfr = Some(transfer);
-        dma = None;
-        buf = None;
+        xfr = None;
+        dma = Some(adc_dma);
+        buf = Some(buffer);
     }
 
     #[idle]
@@ -92,7 +91,7 @@ const APP: () = {
         }
     }
 
-    #[task(schedule = [start_adc_dma], resources = [xfr, dma, buf])]
+    #[task(resources = [xfr, dma, buf])]
     fn start_adc_dma() {
         if let (Some(adc_dma), Some(buffer)) = (resources.dma.take(), resources.buf.take()) {
             hprintln!("IDLE: start next xfer").unwrap();
@@ -101,11 +100,9 @@ const APP: () = {
         } else {
             hprintln!("IDLE: ERR: no rdma").unwrap();
         }
-
-        schedule.start_adc_dma(scheduled + PERIOD.cycles()).unwrap();
     }
 
-    #[interrupt(resources = [xfr, dma, buf])]
+    #[interrupt(schedule = [start_adc_dma], resources = [xfr, dma, buf])]
     fn DMA1_CHANNEL1() {
         if let Some(xfr) = resources.xfr.take() {
             let (buf, dma) = xfr.wait();
@@ -115,6 +112,10 @@ const APP: () = {
         } else {
             hprintln!("DMA1_CH1 IRQ: ERR: no xfer").unwrap();
         }
+
+        schedule
+            .start_adc_dma(Instant::now() + PERIOD.cycles())
+            .unwrap();
     }
 
     // needed for RTFM timer queue and task management
