@@ -18,8 +18,9 @@ use hal::stm32;
 use hal::stm32::interrupt;
 use panic_semihosting as _;
 use stm32f1xx_hal as hal;
+use stm32f1xx_hal::adc::Continuous;
 
-type RdmaT = adc::AdcDma<gpio::gpioa::PA0<gpio::Analog>>;
+type RdmaT = adc::AdcDma<gpio::gpioa::PA0<gpio::Analog>, Continuous>;
 type RbufT = &'static mut [u16; 4];
 
 static G_XFR: Mutex<RefCell<Option<Transfer<W, RbufT, RdmaT>>>> = Mutex::new(RefCell::new(None));

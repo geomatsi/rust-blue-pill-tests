@@ -1,6 +1,8 @@
 #![no_main]
 #![no_std]
 
+use embedded_hal::digital::v2::OutputPin;
+
 use cortex_m_rt as rt;
 use cortex_m_semihosting::hprintln;
 use hal::prelude::*;

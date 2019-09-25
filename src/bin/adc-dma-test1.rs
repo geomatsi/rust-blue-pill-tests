@@ -10,6 +10,7 @@ use hal::pac;
 use hal::prelude::*;
 use panic_semihosting as _;
 use stm32f1xx_hal as hal;
+use stm32f1xx_hal::adc::Continuous;
 
 #[entry]
 fn main() -> ! {
@@ -54,7 +55,7 @@ fn main() -> ! {
 #[allow(unconditional_recursion)]
 fn read_loop(
     buf: &'static mut [u16; 8],
-    adc_dma: adc::AdcDma<gpio::gpioa::PA0<gpio::Analog>>,
+    adc_dma: adc::AdcDma<gpio::gpioa::PA0<gpio::Analog>, Continuous>,
 ) -> ! {
     let (buf, adc_dma) = adc_dma.read(buf).wait();
     hprintln!("{:#?} ", buf).unwrap();

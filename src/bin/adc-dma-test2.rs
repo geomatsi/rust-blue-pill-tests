@@ -11,8 +11,9 @@ use hal::pac;
 use hal::prelude::*;
 use panic_semihosting as _;
 use stm32f1xx_hal as hal;
+use stm32f1xx_hal::adc::Continuous;
 
-static mut G_ADC: Option<adc::AdcDma<gpio::gpioa::PA0<gpio::Analog>>> = None;
+static mut G_ADC: Option<adc::AdcDma<gpio::gpioa::PA0<gpio::Analog>, Continuous>> = None;
 static mut G_BUF: Option<&'static mut [u16; 8]> = None;
 
 #[entry]
