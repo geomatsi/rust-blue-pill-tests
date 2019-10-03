@@ -47,6 +47,9 @@ features = ["stm32f103", "rt"]
 [dependencies.bitbang-hal]
 git = "https://github.com/sajattack/bitbang-hal"
 
+[dependencies.infrared]
+git = "https://github.com/jkristell/infrared.git"
+
 [dependencies.shared-bus]
 #git = "https://github.com/Rahix/shared-bus.git"
 git = "https://github.com/geomatsi/shared-bus.git"
