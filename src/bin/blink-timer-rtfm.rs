@@ -2,13 +2,13 @@
 #![no_main]
 #![no_std]
 
-use cm::iprintln;
 use cortex_m as cm;
+use cortex_m_semihosting::hprintln;
 use hal::prelude::*;
 use hal::stm32;
 use hal::timer::Event;
 use hal::timer::Timer;
-use panic_itm as _;
+use panic_semihosting as _;
 use rtfm;
 use rtfm::app;
 use stm32f1xx_hal as hal;
@@ -17,7 +17,6 @@ use stm32f1xx_hal as hal;
 const APP: () = {
     // resources
     static mut beat: u8 = 0;
-    static mut stim: hal::stm32::ITM = ();
     static mut led1: hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>> = ();
     static mut tmr2: hal::timer::CountDownTimer<stm32::TIM2> = ();
     static mut tmr3: hal::timer::CountDownTimer<stm32::TIM3> = ();
@@ -49,7 +48,6 @@ const APP: () = {
         led1 = l1;
         tmr2 = t2;
         tmr3 = t3;
-        stim = core.ITM;
     }
 
     #[idle]
@@ -59,10 +57,9 @@ const APP: () = {
         }
     }
 
-    #[interrupt(resources = [beat, tmr2, stim])]
+    #[interrupt(resources = [beat, tmr2])]
     fn TIM2() {
-        let dbg = &mut resources.stim.stim[0];
-        iprintln!(dbg, "TIM2 beat = {}", *resources.beat);
+        hprintln!("TIM2 beat = {}", *resources.beat).unwrap();
 
         *resources.beat += 1;
         resources.tmr2.start(1.hz());
