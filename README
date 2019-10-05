@@ -1,14 +1,17 @@
-For semihosting debug:
-$ sudo openocd
-$ cargo build --bin test
-$ cargo run --bin test
+* Semihosting debug
+Commands:
+  $ sudo openocd
+  $ cargo build --bin test
+  $ cargo run --bin test
 
-For itm debug:
-$ mkfifo /tmp/itm.fifo
-$ ~/.cargo/bin/itmdump -f /tmp/itm.fifo -F
-$ cargo build --bin test
-$ cargo run --bin test
 
-Notes
-1. ITM + JLink Pro
-Connect SWO JLink pin with SWO Blue Pill pin (B3).
+* ITM debug
+Commands:
+  $ mkfifo /tmp/itm.fifo
+  $ ~/.cargo/bin/itmdump -f /tmp/itm.fifo -F
+  $ cargo build --bin test
+  $ cargo run --bin test
+
+SWO pin PB3 on BluePill has to be connected to appropriate SWO pin on
+debugger/programmer. Note that ST-Link does not have SWO pin,
+while Jlink Pro has.
