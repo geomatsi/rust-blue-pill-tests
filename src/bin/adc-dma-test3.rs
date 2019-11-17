@@ -57,13 +57,12 @@ fn main() -> ! {
 
     let adc_dma = adc1.with_dma(adc_ch0, dma_ch1);
 
-    nvic.enable(stm32::Interrupt::DMA1_CHANNEL1);
-
-    cm::peripheral::NVIC::unpend(stm32::Interrupt::DMA1_CHANNEL1);
-
     unsafe {
         nvic.set_priority(stm32::Interrupt::DMA1_CHANNEL1, 1);
+        cm::peripheral::NVIC::unmask(stm32::Interrupt::DMA1_CHANNEL1);
     }
+
+    cm::peripheral::NVIC::unpend(stm32::Interrupt::DMA1_CHANNEL1);
 
     let xfer = adc_dma.read(buf);
 

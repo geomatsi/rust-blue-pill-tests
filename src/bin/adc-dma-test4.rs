@@ -85,13 +85,12 @@ fn main() -> ! {
         G_XFR.borrow(cs).replace(Some(xfer));
     });
 
-    nvic.enable(stm32::Interrupt::DMA1_CHANNEL1);
-
-    cm::peripheral::NVIC::unpend(stm32::Interrupt::DMA1_CHANNEL1);
-
     unsafe {
         nvic.set_priority(stm32::Interrupt::DMA1_CHANNEL1, 1);
+        cm::peripheral::NVIC::unmask(stm32::Interrupt::DMA1_CHANNEL1);
     }
+
+    cm::peripheral::NVIC::unpend(stm32::Interrupt::DMA1_CHANNEL1);
 
     loop {
         hprintln!("IDLE: wait 1 sec").unwrap();

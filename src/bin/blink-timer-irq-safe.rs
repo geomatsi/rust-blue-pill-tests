@@ -47,12 +47,12 @@ fn init_periph(
 ) -> (CountDownTimer<TIM2>, PC13<Output<PushPull>>) {
     let nvic = &mut cp.NVIC;
 
-    nvic.enable(stm32::Interrupt::TIM2);
-    cm::peripheral::NVIC::unpend(stm32::Interrupt::TIM2);
-
     unsafe {
         nvic.set_priority(stm32::Interrupt::TIM2, 1);
+        cm::peripheral::NVIC::unmask(stm32::Interrupt::TIM2);
     }
+
+    cm::peripheral::NVIC::unpend(stm32::Interrupt::TIM2);
 
     // configure clocks
     let mut rcc = dp.RCC.constrain();

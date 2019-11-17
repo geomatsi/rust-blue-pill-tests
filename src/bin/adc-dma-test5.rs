@@ -16,9 +16,9 @@ use hal::gpio::Analog;
 use hal::prelude::*;
 use hal::stm32;
 use panic_semihosting as _;
-use rtfm;
 use rtfm::app;
-use rtfm::Instant;
+use rtfm::cyccnt::Instant;
+use rtfm::cyccnt::U32Ext;
 use stm32f1xx_hal as hal;
 
 type RdmaT = adc::AdcDma<AdcPins, Scan>;
@@ -39,30 +39,32 @@ impl SetChannels<AdcPins> for Adc<stm32::ADC1> {
         self.set_regular_sequence(&[0, 1, 2, 3]);
     }
 }
-#[app(device = stm32f1xx_hal::stm32)]
+#[app(device = stm32f1xx_hal::stm32, peripherals = true, monotonic = rtfm::cyccnt::CYCCNT)]
 const APP: () = {
-    // resources
-    static mut xfr: Option<Transfer<W, RbufT, RdmaT>> = ();
-    static mut dma: Option<RdmaT> = ();
-    static mut buf: Option<RbufT> = ();
+    struct Resources {
+        // late resources
+        xfr: Option<Transfer<W, RbufT, RdmaT>>,
+        dma: Option<RdmaT>,
+        buf: Option<RbufT>,
+    }
 
     #[init(schedule = [start_adc_dma])]
-    fn init() {
-        let mut flash = device.FLASH.constrain();
-        let mut rcc = device.RCC.constrain();
+    fn init(mut cx: init::Context) -> init::LateResources {
+        let mut flash = cx.device.FLASH.constrain();
+        let mut rcc = cx.device.RCC.constrain();
 
         let clocks = rcc.cfgr.adcclk(1.mhz()).freeze(&mut flash.acr);
         //let clocks = rcc.cfgr.use_hse(8.mhz()).sysclk(32.mhz()).pclk1(16.mhz()).adcclk(8.mhz()).freeze(&mut flash.acr);
 
         // dma channel #1
-        let mut dma_ch1 = device.DMA1.split(&mut rcc.ahb).1;
+        let mut dma_ch1 = cx.device.DMA1.split(&mut rcc.ahb).1;
         dma_ch1.listen(dma::Event::TransferComplete);
 
         // setup ADC
-        let adc1 = adc::Adc::adc1(device.ADC1, &mut rcc.apb2, clocks);
+        let adc1 = adc::Adc::adc1(cx.device.ADC1, &mut rcc.apb2, clocks);
 
         // setup GPIOA
-        let mut gpioa = device.GPIOA.split(&mut rcc.apb2);
+        let mut gpioa = cx.device.GPIOA.split(&mut rcc.apb2);
 
         // configure analog inputs
         let adc_ch0 = gpioa.pa0.into_analog(&mut gpioa.crl);
@@ -75,45 +77,51 @@ const APP: () = {
         let buffer = singleton!(: [u16; 4] = [0; 4]).unwrap();
         let adc_dma = adc1.with_scan_dma(adc_pins, dma_ch1);
 
-        schedule
+        /* Enable the monotonic timer based on CYCCNT */
+        cx.core.DCB.enable_trace();
+        cx.core.DWT.enable_cycle_counter();
+
+        cx.schedule
             .start_adc_dma(Instant::now() + PERIOD.cycles())
             .unwrap();
 
-        xfr = None;
-        dma = Some(adc_dma);
-        buf = Some(buffer);
+        init::LateResources {
+            xfr: None,
+            dma: Some(adc_dma),
+            buf: Some(buffer),
+        }
     }
 
     #[idle]
-    fn idle() -> ! {
+    fn idle(_: idle::Context) -> ! {
         loop {
             cm::asm::wfi();
         }
     }
 
     #[task(resources = [xfr, dma, buf])]
-    fn start_adc_dma() {
-        if let (Some(adc_dma), Some(buffer)) = (resources.dma.take(), resources.buf.take()) {
+    fn start_adc_dma(cx: start_adc_dma::Context) {
+        if let (Some(adc_dma), Some(buffer)) = (cx.resources.dma.take(), cx.resources.buf.take()) {
             hprintln!("IDLE: start next xfer").unwrap();
             let transfer = adc_dma.read(buffer);
-            *resources.xfr = Some(transfer);
+            *cx.resources.xfr = Some(transfer);
         } else {
             hprintln!("IDLE: ERR: no rdma").unwrap();
         }
     }
 
-    #[interrupt(schedule = [start_adc_dma], resources = [xfr, dma, buf])]
-    fn DMA1_CHANNEL1() {
-        if let Some(xfr) = resources.xfr.take() {
+    #[task(binds = DMA1_CHANNEL1, schedule = [start_adc_dma], resources = [xfr, dma, buf])]
+    fn dma1_channel1(cx: dma1_channel1::Context) {
+        if let Some(xfr) = cx.resources.xfr.take() {
             let (buf, dma) = xfr.wait();
             hprintln!("DMA1_CH1 IRQ: {:?}", buf).unwrap();
-            *resources.dma = Some(dma);
-            *resources.buf = Some(buf);
+            *cx.resources.dma = Some(dma);
+            *cx.resources.buf = Some(buf);
         } else {
             hprintln!("DMA1_CH1 IRQ: ERR: no xfer").unwrap();
         }
 
-        schedule
+        cx.schedule
             .start_adc_dma(Instant::now() + PERIOD.cycles())
             .unwrap();
     }

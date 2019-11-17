@@ -14,8 +14,7 @@ eeprom24x = "0.3.0"
 lm75 = "0.1.1"
 
 [dependencies.cortex-m-rtfm]
-version = "0.4.3"
-features = ["timer-queue"]
+version = "0.5.0"
 
 [dependencies.cortex-m]
 version="0.6.1"
@@ -40,15 +39,15 @@ git = "https://github.com/astro/embedded-nrf24l01"
 #path = "/home/matsi/devel/code/rust/embedded-nrf24l01"
 
 [dependencies.stm32f1xx-hal]
-#git = "https://github.com/stm32-rs/stm32f1xx-hal.git"
-path = "/home/matsi/devel/code/zzz-dev-rust/stm32f1xx-hal"
+git = "https://github.com/stm32-rs/stm32f1xx-hal.git"
+rev = "16cb8d74684a3b468013132851e92f118470ce40"
 features = ["stm32f103", "rt"]
 
 [dependencies.bitbang-hal]
-git = "https://github.com/sajattack/bitbang-hal"
+version = "0.3.0"
 
 [dependencies.infrared]
-git = "https://github.com/jkristell/infrared.git"
+version = "0.4.0"
 
 [dependencies.shared-bus]
 #git = "https://github.com/Rahix/shared-bus.git"
