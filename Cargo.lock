@@ -18,15 +18,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "as-slice"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "generic-array 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "stable_deref_trait 1.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
 name = "autocfg"
 version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -73,7 +64,7 @@ dependencies = [
  "panic-itm 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "panic-semihosting 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "shared-bus 0.1.4 (git+https://github.com/geomatsi/shared-bus.git?branch=shared-adc)",
- "stm32f1xx-hal 0.4.0 (git+https://github.com/stm32-rs/stm32f1xx-hal.git?rev=16cb8d74684a3b468013132851e92f118470ce40)",
+ "stm32f1xx-hal 0.4.0 (git+https://github.com/stm32-rs/stm32f1xx-hal.git?rev=ffd4663279af6d51e3e9a3405b9e26002c789d3d)",
 ]
 
 [[package]]
@@ -378,9 +369,9 @@ dependencies = [
 [[package]]
 name = "stm32f1xx-hal"
 version = "0.4.0"
-source = "git+https://github.com/stm32-rs/stm32f1xx-hal.git?rev=16cb8d74684a3b468013132851e92f118470ce40#16cb8d74684a3b468013132851e92f118470ce40"
+source = "git+https://github.com/stm32-rs/stm32f1xx-hal.git?rev=ffd4663279af6d51e3e9a3405b9e26002c789d3d#ffd4663279af6d51e3e9a3405b9e26002c789d3d"
 dependencies = [
- "as-slice 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "as-slice 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "cast 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m-rt 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -431,7 +422,6 @@ dependencies = [
 [metadata]
 "checksum aligned 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "d3a316c7ea8e1e9ece54862c992def5a7ac14de9f5832b69d71760680efeeefa"
 "checksum as-slice 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "293dac66b274fab06f95e7efb05ec439a6b70136081ea522d270bc351ae5bb27"
-"checksum as-slice 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "866d3b320bc31357e8e76cadfdc55c9be8f58c591c6ba6dbaac2ee9d77750f8a"
 "checksum autocfg 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)" = "1d49d90015b3c36167a20fe2810c5cd875ad504b39cff3d4eae7977e6b7c1cb2"
 "checksum bare-metal 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)" = "5deb64efa5bd81e31fcd1938615a6d98c82eafcbcd787162b6f63b91d6bac5b3"
 "checksum bitbang-hal 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b974928798315e41bc910f17c378a96fbb6141aa404b0c1276d02d11c966bc24"
@@ -473,7 +463,7 @@ dependencies = [
 "checksum shared-bus 0.1.4 (git+https://github.com/geomatsi/shared-bus.git?branch=shared-adc)" = "<none>"
 "checksum stable_deref_trait 1.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "dba1a27d3efae4351c8051072d619e3ade2820635c3958d826bfea39d59b54c8"
 "checksum stm32f1 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "22ce629123831891663402861bdc7140ebfd6a34a464329f9b9ec1cfde72055a"
-"checksum stm32f1xx-hal 0.4.0 (git+https://github.com/stm32-rs/stm32f1xx-hal.git?rev=16cb8d74684a3b468013132851e92f118470ce40)" = "<none>"
+"checksum stm32f1xx-hal 0.4.0 (git+https://github.com/stm32-rs/stm32f1xx-hal.git?rev=ffd4663279af6d51e3e9a3405b9e26002c789d3d)" = "<none>"
 "checksum syn 1.0.8 (registry+https://github.com/rust-lang/crates.io-index)" = "661641ea2aa15845cddeb97dad000d22070bb5c1fb456b96c1cba883ec691e92"
 "checksum typenum 1.11.2 (registry+https://github.com/rust-lang/crates.io-index)" = "6d2783fe2d6b8c1101136184eb41be8b1ad379e4657050b8aaff0c79ee7575f9"
 "checksum unicode-xid 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "826e7639553986605ec5979c7dd957c7895e93eabed50ab2ffa7f6128a75097c"

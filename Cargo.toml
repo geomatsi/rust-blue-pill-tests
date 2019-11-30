@@ -52,9 +52,8 @@ git = "https://github.com/astro/embedded-nrf24l01"
 
 [dependencies.stm32f1xx-hal]
 git = "https://github.com/stm32-rs/stm32f1xx-hal.git"
-rev = "16cb8d74684a3b468013132851e92f118470ce40"
-#path = "/home/matsi/devel/code/zzz-dev-rust/stm32f1xx-hal"
-features = ["stm32f103", "rt"]
+rev = "ffd4663279af6d51e3e9a3405b9e26002c789d3d"
+features = ["stm32f103", "rt", "medium"]
 
 [dependencies.bitbang-hal]
 version = "0.3.0"
