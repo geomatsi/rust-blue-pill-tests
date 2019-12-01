@@ -39,20 +39,17 @@ features=["unproven"]
 [dependencies.hc-sr04]
 git = "https://github.com/geomatsi/hc-sr04"
 branch = "update-wip"
-#path = "/home/matsi/devel/code/rust/hc-sr04"
 
 [dependencies.nrf24l01]
 git = "https://github.com/geomatsi/nrf24l01"
 branch = "update-deps"
-#path = "/home/matsi/devel/code/rust/nrf24l01"
 
 [dependencies.embedded-nrf24l01]
 git = "https://github.com/astro/embedded-nrf24l01"
-#path = "/home/matsi/devel/code/rust/embedded-nrf24l01"
 
 [dependencies.stm32f1xx-hal]
 git = "https://github.com/stm32-rs/stm32f1xx-hal.git"
-rev = "ffd4663279af6d51e3e9a3405b9e26002c789d3d"
+rev = "d0067500e48dec5ddaf031afbcf13542bf235864"
 features = ["stm32f103", "rt", "medium"]
 
 [dependencies.bitbang-hal]
