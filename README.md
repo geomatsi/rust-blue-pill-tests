@@ -1,18 +1,21 @@
 ![Rust](https://github.com/geomatsi/rust-blue-pill-tests/workflows/Rust/badge.svg?branch=master)
 
-* Semihosting debug
+# Semihosting debug
 Commands:
+```bash
   $ sudo openocd
   $ cargo build --bin test
   $ cargo run --bin test
+```
 
-
-* ITM debug
+# ITM debug
 Commands:
+```bash
   $ mkfifo /tmp/itm.fifo
   $ ~/.cargo/bin/itmdump -f /tmp/itm.fifo -F
   $ cargo build --bin test
   $ cargo run --bin test
+```
 
 SWO pin PB3 on BluePill has to be connected to appropriate SWO pin on
 debugger/programmer. Note that ST-Link does not have SWO pin,
