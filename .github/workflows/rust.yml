@@ -27,5 +27,5 @@ jobs:
         target: thumbv7m-none-eabi
         override: true
     - name: Build Rust Embedded examples for BluePill
-      run: cargo build --bin --features ${{ matrix.features }} --release
+      run: cargo build --bins --features ${{ matrix.features }} --release
 
