@@ -1,0 +1,31 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features:
+          - tim2_remap_00
+          - tim2_remap_01
+          - tim2_remap_10
+          - tim2_remap_11
+          - tim3_remap_00
+          - tim3_remap_10
+          - tim4_remap_00
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: thumbv7m-none-eabi
+        override: true
+    - name: Build Rust Embedded examples for BluePill
+      run: cargo build --bin --features ${{ matrix.features }} --release
+
