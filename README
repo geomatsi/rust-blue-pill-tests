@@ -1,3 +1,5 @@
+![Rust](https://github.com/geomatsi/rust-blue-pill-tests/workflows/Rust/badge.svg?branch=master)
+
 * Semihosting debug
 Commands:
   $ sudo openocd
