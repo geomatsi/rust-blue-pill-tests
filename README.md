@@ -1,14 +1,21 @@
 ![Rust](https://github.com/geomatsi/rust-blue-pill-tests/workflows/Rust/badge.svg?branch=master)
 
-# Semihosting debug
+# cargo-make tools
+Start tmux debug environment with ST-Link:
+```bash
+$ cargo make debug
+```
+
+# Debug options
+## Semihosting debug
 Commands:
 ```bash
-  $ sudo openocd
+  $ sudo openocd -f tools/openocd.cfg -c 'attach ()'
   $ cargo build --bin test
   $ cargo run --bin test
 ```
 
-# ITM debug
+## ITM debug
 Commands:
 ```bash
   $ mkfifo /tmp/itm.fifo

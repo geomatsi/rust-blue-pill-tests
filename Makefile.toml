@@ -1,0 +1,6 @@
+[tasks.debug]
+script = [
+'''
+sudo tools/tmux-debug
+'''
+]
