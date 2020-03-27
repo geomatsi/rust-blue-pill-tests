@@ -5,6 +5,15 @@ Start tmux debug environment with ST-Link:
 ```bash
 $ cargo make debug
 ```
+Flash release image:
+```bash
+$ cargo make flash_release <binary name>
+```
+
+Flash debug image:
+```bash
+$ cargo make flash_debug <binary name>
+```
 
 # Debug options
 ## Semihosting debug

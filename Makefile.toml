@@ -4,3 +4,17 @@ script = [
 sudo tools/tmux-debug
 '''
 ]
+
+[tasks.flash_debug]
+script = [
+'''
+cargo build --bin $1 && sudo openocd -f tools/openocd.cfg -c "flash_img target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/debug/$1"
+'''
+]
+
+[tasks.flash_release]
+script = [
+'''
+cargo build --bin $1 --release && sudo openocd -f tools/openocd.cfg -c "flash_img target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/release/$1"
+'''
+]
