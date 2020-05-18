@@ -65,6 +65,7 @@ dependencies = [
  "embedded-nrf24l01",
  "hc-sr04",
  "infrared",
+ "itm_logger",
  "lm75",
  "nb",
  "nrf24l01",
@@ -88,6 +89,12 @@ checksum = "4b9434b9a5aa1450faa3f9cb14ea0e8c53bb5d2b3c1bfd1ab4fc03e9f33fbfb0"
 dependencies = [
  "rustc_version",
 ]
+
+[[package]]
+name = "cfg-if"
+version = "0.1.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 
 [[package]]
 name = "cortex-m"
@@ -247,12 +254,31 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2847d2823eb5bcabd4da21ae3a5fe7e20f374968109ed5ca95db3ebe4c5acd0a"
 
 [[package]]
+name = "itm_logger"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9950a91673557006ee7b9aff8e2b67d5a9ca3d91418b32a5f7f83a25cde9bc2a"
+dependencies = [
+ "cortex-m",
+ "log",
+]
+
+[[package]]
 name = "lm75"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d1a72a8642c8704c1eee3f29a1bc9c8d5bd5265e81f8b5911eb62348cf730b1c"
 dependencies = [
  "embedded-hal",
+]
+
+[[package]]
+name = "log"
+version = "0.4.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7"
+dependencies = [
+ "cfg-if",
 ]
 
 [[package]]
