@@ -63,12 +63,11 @@ dependencies = [
  "eeprom24x",
  "embedded-hal",
  "embedded-nrf24l01",
- "hc-sr04",
  "infrared",
  "itm_logger",
  "lm75",
  "nb",
- "nrf24l01",
+ "panic-halt",
  "panic-itm",
  "panic-semihosting",
  "shared-bus",
@@ -218,16 +217,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hc-sr04"
-version = "0.1.0"
-source = "git+https://github.com/geomatsi/hc-sr04?branch=update-wip#b97e824b404a1f014baaeae4a4dd267e1edd94ed"
-dependencies = [
- "embedded-hal",
- "nb",
- "void",
-]
-
-[[package]]
 name = "heapless"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -288,12 +277,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1411551beb3c11dedfb0a90a0fa256b47d28b9ec2cdff34c25a2fa59e45dbdc"
 
 [[package]]
-name = "nrf24l01"
-version = "0.0.1"
-source = "git+https://github.com/geomatsi/nrf24l01?branch=update-deps#a88f717f714f0b3663f48caa8da22aae88978d3d"
-dependencies = [
- "embedded-hal",
-]
+name = "panic-halt"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de96540e0ebde571dc55c73d60ef407c653844e6f9a1e2fdbd40c07b9252d812"
 
 [[package]]
 name = "panic-itm"
