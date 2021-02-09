@@ -54,7 +54,7 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, clocks);
 
     #[cfg(feature = "tim2_remap_00")]
-    let mut chan = {
+    let pwm = {
         let mut gpioa = p.GPIOA.split(&mut rcc.apb2);
         let mut afio = p.AFIO.constrain(&mut rcc.apb2);
 
@@ -71,7 +71,7 @@ fn main() -> ! {
     };
 
     #[cfg(feature = "tim2_remap_01")]
-    let mut chan = {
+    let pwm = {
         let mut gpioa = p.GPIOA.split(&mut rcc.apb2);
         let mut gpiob = p.GPIOB.split(&mut rcc.apb2);
         let mut afio = p.AFIO.constrain(&mut rcc.apb2);
@@ -92,7 +92,7 @@ fn main() -> ! {
     };
 
     #[cfg(feature = "tim2_remap_10")]
-    let mut chan = {
+    let pwm = {
         let mut gpioa = p.GPIOA.split(&mut rcc.apb2);
         let mut gpiob = p.GPIOB.split(&mut rcc.apb2);
         let mut afio = p.AFIO.constrain(&mut rcc.apb2);
@@ -110,7 +110,7 @@ fn main() -> ! {
     };
 
     #[cfg(feature = "tim2_remap_11")]
-    let mut chan = {
+    let pwm = {
         let mut gpioa = p.GPIOA.split(&mut rcc.apb2);
         let mut gpiob = p.GPIOB.split(&mut rcc.apb2);
         let mut afio = p.AFIO.constrain(&mut rcc.apb2);
@@ -131,7 +131,7 @@ fn main() -> ! {
     };
 
     #[cfg(feature = "tim3_remap_00")]
-    let mut chan = {
+    let pwm = {
         let mut gpioa = p.GPIOA.split(&mut rcc.apb2);
         let mut gpiob = p.GPIOB.split(&mut rcc.apb2);
         let mut afio = p.AFIO.constrain(&mut rcc.apb2);
@@ -149,7 +149,7 @@ fn main() -> ! {
     };
 
     #[cfg(feature = "tim3_remap_10")]
-    let mut chan = {
+    let pwm = {
         let gpioa = p.GPIOA.split(&mut rcc.apb2);
         let mut gpiob = p.GPIOB.split(&mut rcc.apb2);
         let mut afio = p.AFIO.constrain(&mut rcc.apb2);
@@ -170,7 +170,7 @@ fn main() -> ! {
     };
 
     #[cfg(feature = "tim4_remap_00")]
-    let mut chan = {
+    let pwm = {
         let mut gpiob = p.GPIOB.split(&mut rcc.apb2);
         let mut afio = p.AFIO.constrain(&mut rcc.apb2);
 
@@ -186,6 +186,7 @@ fn main() -> ! {
         )
     };
 
+    let mut chan = pwm.split();
     let max: u16 = chan.0.get_max_duty();
     let duty: u16 = max / 2;
 
