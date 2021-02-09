@@ -16,9 +16,9 @@ use hal::gpio::Analog;
 use hal::prelude::*;
 use hal::stm32;
 use panic_semihosting as _;
-use rtfm::app;
-use rtfm::cyccnt::Instant;
-use rtfm::cyccnt::U32Ext;
+use rtic::app;
+use rtic::cyccnt::Instant;
+use rtic::cyccnt::U32Ext;
 use stm32f1xx_hal as hal;
 
 type RdmaT = adc::AdcDma<AdcPins, Scan>;
@@ -39,7 +39,7 @@ impl SetChannels<AdcPins> for Adc<stm32::ADC1> {
         self.set_regular_sequence(&[0, 1, 2, 3]);
     }
 }
-#[app(device = stm32f1xx_hal::stm32, peripherals = true, monotonic = rtfm::cyccnt::CYCCNT)]
+#[app(device = stm32f1xx_hal::stm32, peripherals = true, monotonic = rtic::cyccnt::CYCCNT)]
 const APP: () = {
     struct Resources {
         // late resources

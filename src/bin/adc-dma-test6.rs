@@ -16,9 +16,9 @@ use hal::gpio::Analog;
 use hal::prelude::*;
 use hal::stm32;
 use panic_semihosting as _;
-use rtfm::app;
-use rtfm::cyccnt::Instant;
-use rtfm::cyccnt::U32Ext;
+use rtic::app;
+use rtic::cyccnt::Instant;
+use rtic::cyccnt::U32Ext;
 use stm32f1xx_hal as hal;
 
 type RdmaType1 = adc::AdcDma<AdcPinsOne, Scan>;
@@ -61,7 +61,7 @@ pub enum State {
     Two,
 }
 
-#[app(device = stm32f1xx_hal::stm32, peripherals = true, monotonic = rtfm::cyccnt::CYCCNT)]
+#[app(device = stm32f1xx_hal::stm32, peripherals = true, monotonic = rtic::cyccnt::CYCCNT)]
 const APP: () = {
     struct Resources {
         // late resources

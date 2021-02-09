@@ -27,8 +27,8 @@ eeprom24x = "0.3.0"
 lm75 = "0.1.2"
 itm_logger = "0.1.2"
 
-[dependencies.cortex-m-rtfm]
-version = "0.5.3"
+[dependencies.cortex-m-rtic]
+version = "0.5.5"
 
 [dependencies.cortex-m]
 version="0.7.1"

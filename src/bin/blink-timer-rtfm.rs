@@ -9,7 +9,7 @@ use hal::stm32;
 use hal::timer::Event;
 use hal::timer::Timer;
 use panic_semihosting as _;
-use rtfm::app;
+use rtic::app;
 
 use stm32f1xx_hal as hal;
 
