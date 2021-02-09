@@ -83,8 +83,8 @@ fn TIM2() {
             G_LED.borrow(cs).borrow_mut().deref_mut(),
         ) {
             hprintln!("TIM2 IRQ").unwrap();
+            tim.clear_update_interrupt_flag();
             led.toggle().unwrap();
-            tim.start(1.hz());
         }
     });
 }

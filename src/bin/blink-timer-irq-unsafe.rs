@@ -50,7 +50,8 @@ fn main() -> ! {
     }
 
     loop {
-        cm::asm::nop();
+        hprintln!("MAIN LOOP").unwrap();
+        cm::asm::wfi();
     }
 }
 
@@ -73,6 +74,6 @@ fn TIM3() {
     let led = unsafe { G_LED.as_mut().unwrap() };
     let tim = unsafe { G_TMR.as_mut().unwrap() };
 
+    tim.clear_update_interrupt_flag();
     led.toggle().unwrap();
-    tim.start(1.hz());
 }

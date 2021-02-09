@@ -68,12 +68,12 @@ const APP: () = {
         hprintln!("TIM2 beat = {}", *cx.resources.beat).unwrap();
 
         *cx.resources.beat += 1;
-        cx.resources.tmr2.start(1.hz());
+        cx.resources.tmr2.clear_update_interrupt_flag();
     }
 
     #[task(binds = TIM3, resources = [led1, tmr3])]
     fn tim3(cx: tim3::Context) {
         cx.resources.led1.toggle().unwrap();
-        cx.resources.tmr3.start(5.hz());
+        cx.resources.tmr3.clear_update_interrupt_flag();
     }
 };
