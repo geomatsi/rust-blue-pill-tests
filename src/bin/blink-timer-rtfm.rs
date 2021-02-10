@@ -3,13 +3,13 @@
 #![no_std]
 
 use cortex_m as cm;
-use cortex_m_semihosting::hprintln;
 use hal::prelude::*;
 use hal::stm32;
 use hal::timer::Event;
 use hal::timer::Timer;
-use panic_semihosting as _;
+use panic_rtt_target as _;
 use rtic::app;
+use rtt_target::{rprintln, rtt_init_print};
 
 use stm32f1xx_hal as hal;
 
@@ -27,6 +27,8 @@ const APP: () = {
 
     #[init]
     fn init(cx: init::Context) -> init::LateResources {
+        rtt_init_print!();
+
         let mut rcc = cx.device.RCC.constrain();
 
         // configure clocks
@@ -59,13 +61,13 @@ const APP: () = {
     #[idle]
     fn idle(_: idle::Context) -> ! {
         loop {
-            cm::asm::wfi();
+            cm::asm::nop();
         }
     }
 
     #[task(binds = TIM2, resources = [beat, tmr2])]
     fn tim2(cx: tim2::Context) {
-        hprintln!("TIM2 beat = {}", *cx.resources.beat).unwrap();
+        rprintln!("TIM2 beat = {}", *cx.resources.beat);
 
         *cx.resources.beat += 1;
         cx.resources.tmr2.clear_update_interrupt_flag();
@@ -73,6 +75,7 @@ const APP: () = {
 
     #[task(binds = TIM3, resources = [led1, tmr3])]
     fn tim3(cx: tim3::Context) {
+        rprintln!("TIM3 blink");
         cx.resources.led1.toggle().unwrap();
         cx.resources.tmr3.clear_update_interrupt_flag();
     }
