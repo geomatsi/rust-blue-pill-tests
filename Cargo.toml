@@ -27,6 +27,14 @@ eeprom24x = "0.3.0"
 lm75 = "0.1.2"
 itm_logger = "0.1.2"
 
+[dependencies.rtt-target]
+version = "0.3.0"
+features = ["cortex-m"]
+
+[dependencies.panic-rtt-target]
+version = "0.1.1"
+features = ["cortex-m"]
+
 [dependencies.cortex-m-rtic]
 version = "0.5.5"
 
