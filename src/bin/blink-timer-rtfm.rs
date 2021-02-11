@@ -2,6 +2,7 @@
 #![no_main]
 #![no_std]
 
+use core::fmt::Write;
 use cortex_m as cm;
 use hal::prelude::*;
 use hal::stm32;
@@ -9,8 +10,7 @@ use hal::timer::Event;
 use hal::timer::Timer;
 use panic_rtt_target as _;
 use rtic::app;
-use rtt_target::{rprintln, rtt_init_print};
-
+use rtt_target::{rtt_init, UpChannel};
 use stm32f1xx_hal as hal;
 
 #[app(device = stm32f1xx_hal::stm32, peripherals = true)]
@@ -20,6 +20,8 @@ const APP: () = {
         #[init(0)]
         beat: u8,
         // late resources
+        stream1: UpChannel,
+        stream2: UpChannel,
         led1: hal::gpio::gpioc::PC13<hal::gpio::Output<hal::gpio::PushPull>>,
         tmr2: hal::timer::CountDownTimer<stm32::TIM2>,
         tmr3: hal::timer::CountDownTimer<stm32::TIM3>,
@@ -27,7 +29,21 @@ const APP: () = {
 
     #[init]
     fn init(cx: init::Context) -> init::LateResources {
-        rtt_init_print!();
+        let channels = rtt_init! {
+            up: {
+                0: {
+                    size: 512
+                    name: "stream1"
+                }
+                1: {
+                    size: 512
+                    name: "stream2"
+                }
+            }
+        };
+
+        let stream1 = channels.up.0;
+        let stream2 = channels.up.1;
 
         let mut rcc = cx.device.RCC.constrain();
 
@@ -52,6 +68,8 @@ const APP: () = {
         t3.listen(Event::Update);
 
         init::LateResources {
+            stream1: stream1,
+            stream2: stream2,
             led1: l1,
             tmr2: t2,
             tmr3: t3,
@@ -65,17 +83,17 @@ const APP: () = {
         }
     }
 
-    #[task(binds = TIM2, resources = [beat, tmr2])]
+    #[task(binds = TIM2, resources = [beat, tmr2, stream1])]
     fn tim2(cx: tim2::Context) {
-        rprintln!("TIM2 beat = {}", *cx.resources.beat);
+        writeln!(cx.resources.stream1, "TIM2 beat = {}", *cx.resources.beat).ok();
 
         *cx.resources.beat += 1;
         cx.resources.tmr2.clear_update_interrupt_flag();
     }
 
-    #[task(binds = TIM3, resources = [led1, tmr3])]
+    #[task(binds = TIM3, resources = [led1, tmr3, stream2])]
     fn tim3(cx: tim3::Context) {
-        rprintln!("TIM3 blink");
+        writeln!(cx.resources.stream2, "TIM3 blink").ok();
         cx.resources.led1.toggle().unwrap();
         cx.resources.tmr3.clear_update_interrupt_flag();
     }
