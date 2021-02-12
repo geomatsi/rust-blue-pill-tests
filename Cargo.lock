@@ -65,6 +65,7 @@ dependencies = [
  "infrared",
  "itm_logger",
  "lm75",
+ "mfrc522",
  "nb",
  "panic-halt",
  "panic-itm",
@@ -207,6 +208,15 @@ dependencies = [
 
 [[package]]
 name = "generic-array"
+version = "0.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8107dafa78c80c848b71b60133954b4a58609a3a1a5f9af037ecc7f67280f369"
+dependencies = [
+ "typenum",
+]
+
+[[package]]
+name = "generic-array"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c68f0274ae0e023facc3c97b2e00f076be70e254bc851d972503b328db79b2ec"
@@ -284,6 +294,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "mfrc522"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3af70ed390d4952988d5681a81d736c0442adc235d51ad06997e7cd1419b9ef8"
+dependencies = [
+ "embedded-hal",
+ "generic-array 0.11.1",
 ]
 
 [[package]]
