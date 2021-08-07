@@ -65,7 +65,6 @@ dependencies = [
  "cortex-m-semihosting",
  "eeprom24x",
  "embedded-hal",
- "infrared",
  "itm_logger",
  "lm75",
  "mfrc522",
@@ -274,12 +273,6 @@ checksum = "076f042c5b7b98f31d205f1249267e12a6518c1481e9dae9764af19b707d2292"
 dependencies = [
  "autocfg",
 ]
-
-[[package]]
-name = "infrared"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2847d2823eb5bcabd4da21ae3a5fe7e20f374968109ed5ca95db3ebe4c5acd0a"
 
 [[package]]
 name = "itm_logger"
