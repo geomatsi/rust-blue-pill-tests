@@ -1,17 +1,13 @@
-#![allow(deprecated)]
 #![no_std]
 #![no_main]
 
+use cortex_m_rt as rt;
+use cortex_m_semihosting::hprintln;
 use embedded_hal::adc::Channel;
 use embedded_hal::adc::OneShot;
-
-use cortex_m_rt as rt;
+use panic_semihosting as _;
 use rt::entry;
-
-use cortex_m as cm;
-use panic_itm as _;
-
-use shared_bus;
+use stm32f1xx_hal::stm32::ADC1;
 use stm32f1xx_hal::{adc::Adc, prelude::*, stm32};
 
 pub struct Measurement<'a, ADC, PIN>
@@ -35,8 +31,6 @@ where
     }
 }
 
-type AdcType = Adc<stm32::ADC1>;
-
 #[entry]
 fn main() -> ! {
     let p = stm32::Peripherals::take().unwrap();
@@ -51,19 +45,17 @@ fn main() -> ! {
     let ch1 = gpioa.pa1.into_analog(&mut gpioa.crl);
 
     let adc = Adc::adc1(p.ADC1, &mut rcc.apb2, clocks);
-    let adc_bus = shared_bus::BusManager::<
-        cm::interrupt::Mutex<core::cell::RefCell<AdcType>>,
-        AdcType,
-    >::new(adc);
 
-    let mut adc_mgr1 = adc_bus.acquire();
-    let mut adc_mgr2 = adc_bus.acquire();
+    let adc_bus: &'static _ = shared_bus::new_cortexm!(Adc<ADC1> = adc).unwrap();
+
+    let mut adc_mgr1 = adc_bus.acquire_adc();
+    let mut adc_mgr2 = adc_bus.acquire_adc();
 
     let mut a = Measurement::init(&mut adc_mgr1, ch0);
     let mut b = Measurement::init(&mut adc_mgr2, ch1);
 
     loop {
-        a.test();
-        b.test();
+        hprintln!("reading a: {}", a.test()).unwrap();
+        hprintln!("reading a: {}", b.test()).unwrap();
     }
 }

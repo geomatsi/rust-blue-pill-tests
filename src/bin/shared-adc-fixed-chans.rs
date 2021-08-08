@@ -4,30 +4,19 @@
 use cortex_m_rt as rt;
 use rt::entry;
 
-use cm::interrupt::Mutex;
-use cortex_m as cm;
-
-use core::cell::RefCell;
-
 use cortex_m_semihosting::hprintln;
-use panic_semihosting as _;
-
-use shared_bus::BusManager;
-use shared_bus::BusProxy;
-
 use hal::adc::Adc;
 use hal::prelude::*;
 use hal::stm32;
 use hal::stm32::ADC1;
 use hal::timer::Timer;
+use nb::block;
+use panic_semihosting as _;
+use shared_bus::AdcProxy;
+use shared_bus::CortexMMutex;
 use stm32f1xx_hal as hal;
 
-use nb::block;
-
 /* */
-
-type AdcType = Adc<ADC1>;
-type AdcProxy<'a> = BusProxy<'a, Mutex<RefCell<Adc<ADC1>>>, Adc<ADC1>>;
 
 type Chan0 = hal::gpio::gpioa::PA0<hal::gpio::Analog>;
 type Chan1 = hal::gpio::gpioa::PA1<hal::gpio::Analog>;
@@ -36,13 +25,13 @@ type Chan3 = hal::gpio::gpioa::PA3<hal::gpio::Analog>;
 type Chan4 = hal::gpio::gpioa::PA4<hal::gpio::Analog>;
 
 pub struct M1<'a> {
-    adc: AdcProxy<'a>,
+    adc: AdcProxy<'a, CortexMMutex<Adc<ADC1>>>,
     ch0: Chan0,
     ch1: Chan1,
 }
 
 impl<'a> M1<'a> {
-    pub fn init(adc: AdcProxy<'a>, ch0: Chan0, ch1: Chan1) -> Self {
+    pub fn init(adc: AdcProxy<'a, CortexMMutex<Adc<ADC1>>>, ch0: Chan0, ch1: Chan1) -> Self {
         M1 { adc, ch0, ch1 }
     }
 
@@ -56,14 +45,19 @@ impl<'a> M1<'a> {
 }
 
 pub struct M2<'a> {
-    adc: AdcProxy<'a>,
+    adc: AdcProxy<'a, CortexMMutex<Adc<ADC1>>>,
     ch2: Chan2,
     ch3: Chan3,
     ch4: Chan4,
 }
 
 impl<'a> M2<'a> {
-    pub fn init(adc: AdcProxy<'a>, ch2: Chan2, ch3: Chan3, ch4: Chan4) -> Self {
+    pub fn init(
+        adc: AdcProxy<'a, CortexMMutex<Adc<ADC1>>>,
+        ch2: Chan2,
+        ch3: Chan3,
+        ch4: Chan4,
+    ) -> Self {
         M2 { adc, ch2, ch3, ch4 }
     }
 
@@ -103,9 +97,11 @@ fn main() -> ! {
     let mut tmr = Timer::tim3(p.TIM3, &clocks, &mut rcc.apb1).start_count_down(1.hz());
 
     let adc = Adc::adc1(p.ADC1, &mut rcc.apb2, clocks);
-    let adc_bus = BusManager::<Mutex<RefCell<AdcType>>, AdcType>::new(adc);
-    let adc_mgr1 = adc_bus.acquire();
-    let adc_mgr2 = adc_bus.acquire();
+
+    let adc_bus: &'static _ = shared_bus::new_cortexm!(Adc<ADC1> = adc).unwrap();
+
+    let adc_mgr1 = adc_bus.acquire_adc();
+    let adc_mgr2 = adc_bus.acquire_adc();
 
     let mut a = M1::init(adc_mgr1, ch0, ch1);
     let mut b = M2::init(adc_mgr2, ch2, ch3, ch4);
