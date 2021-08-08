@@ -56,4 +56,4 @@ version = "0.3"
 #git = "https://github.com/Rahix/shared-bus.git"
 git = "https://github.com/geomatsi/shared-bus.git"
 branch = "shared-adc"
-features=["cortexm"]
+features=["cortex-m"]
