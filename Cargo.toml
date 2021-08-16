@@ -26,6 +26,8 @@ eeprom24x = "0.3"
 lm75 = "0.1"
 itm_logger = "0.1"
 mfrc522 = "0.2"
+smart-leds = "0.3"
+ws2812-spi = "0.4"
 
 [dependencies.rtt-target]
 version = "0.3"
