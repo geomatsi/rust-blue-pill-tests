@@ -451,7 +451,7 @@ checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 [[package]]
 name = "shared-bus"
 version = "0.2.2"
-source = "git+https://github.com/geomatsi/shared-bus.git?branch=shared-adc#de5534b99f7a17aa3ba672184756c4aaaef8ce7a"
+source = "git+https://github.com/Rahix/shared-bus.git?rev=70b5a0d17c90e8e145fb17f1633f4439b3067ac6#70b5a0d17c90e8e145fb17f1633f4439b3067ac6"
 dependencies = [
  "cortex-m 0.6.7",
  "embedded-hal",

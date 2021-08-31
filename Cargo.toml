@@ -55,7 +55,6 @@ features = ["stm32f103", "rt", "medium"]
 version = "0.3"
 
 [dependencies.shared-bus]
-#git = "https://github.com/Rahix/shared-bus.git"
-git = "https://github.com/geomatsi/shared-bus.git"
-branch = "shared-adc"
+git = "https://github.com/Rahix/shared-bus.git"
+rev = "70b5a0d17c90e8e145fb17f1633f4439b3067ac6"
 features=["cortex-m"]
