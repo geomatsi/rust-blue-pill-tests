@@ -217,9 +217,9 @@ dependencies = [
 
 [[package]]
 name = "generic-array"
-version = "0.11.1"
+version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8107dafa78c80c848b71b60133954b4a58609a3a1a5f9af037ecc7f67280f369"
+checksum = "667f6ea017b297ec65b8a108c6e9ad6879460721fb3b6b23abf690970147fc28"
 dependencies = [
  "typenum",
 ]
@@ -317,7 +317,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3af70ed390d4952988d5681a81d736c0442adc235d51ad06997e7cd1419b9ef8"
 dependencies = [
  "embedded-hal",
- "generic-array 0.11.1",
+ "generic-array 0.11.2",
 ]
 
 [[package]]
